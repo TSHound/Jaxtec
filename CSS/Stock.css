@@ -1,0 +1,101 @@
+body {
+  background-color: #1c1c1c;
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+}
+.inventory-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+.inventory-header h2 {
+  color: #f5b400;
+}
+.btn-add {
+  background-color: #f5b400;
+  border: none;
+  padding: 10px 15px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  color: black;
+}
+.btn-add:hover {
+  background-color: #d99a00;
+}
+.filter-bar input,
+.filter-bar select {
+  padding: 8px;
+  border: 1px solid #f5b400;
+  border-radius: 4px;
+  background-color: #2a2a2a;
+  color: white;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #2a2a2a;
+  border: 1px solid #f5b400;
+}
+table th,
+table td {
+  border: 1px solid #f5b400;
+  padding: 10px;
+  text-align: center;
+}
+table th {
+  background-color: #000;
+  color: #f5b400;
+}
+.status-in {
+  color: #0f0;
+  font-weight: bold;
+}
+.status-out {
+  color: #f00;
+  font-weight: bold;
+}
+.edit-btn {
+  background-color: #f5b400;
+  color: #000;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.edit-btn:hover {
+  background-color: #d99a00;
+}
+.delete-btn {
+  background-color: #c62828;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.delete-btn:hover {
+  background-color: #a01414;
+}
+.modal-content {
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #f5b400;
+}
+.modal-header {
+  border-bottom: 1px solid #f5b400;
+}
+.modal-footer {
+  border-top: 1px solid #f5b400;
+}
+.form-control,
+.form-select {
+  background-color: #1c1c1c;
+  border: 1px solid #f5b400;
+  color: white;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: #ffc107;
+  box-shadow: none;
+}

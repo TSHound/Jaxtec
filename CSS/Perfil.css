@@ -1,0 +1,362 @@
+/* Perfil.css */
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #18191a !important;
+  margin: 0;
+  padding-top: 70px;
+  font-size: 1.2rem;
+  color: #fff;
+}
+.navbar {
+  background-color: #000 !important;
+  backdrop-filter: none;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+.navbar .nav-link,
+.navbar .navbar-brand {
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.navbar .nav-link {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.navbar .nav-link:hover {
+  color: #ffc107 !important;
+}
+@media (max-width: 991.98px) {
+  .navbar .nav-link,
+  .navbar .navbar-brand {
+    font-size: 0.95rem;
+  }
+}
+.Titulo,
+.Cabeza,
+.text-break,
+.perfil-image,
+.footer,
+.footer .row h5,
+.footer .row p,
+.footer .card,
+.footer .card-title,
+.footer .card-text,
+.footer .btn,
+.modal-body,
+.modal-title {
+  color: #fff !important;
+}
+.Titulo {
+  text-align: center;
+  font-size: 3rem;
+  margin-top: 4rem;
+  font-weight: bold;
+  color: #fff !important;
+}
+.perfil-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 50%;
+  margin: 1rem auto;
+  display: block;
+  border: 4px solid #ffc107;
+  background-color: #111;
+  padding: 10px;
+}
+.Cabeza {
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 1rem;
+  color: #fff !important;
+  font-weight: bold;
+}
+.text-break {
+  max-width: 800px;
+  margin: 1rem auto 3rem auto;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  text-align: justify;
+  padding: 0 1rem;
+  color: #fff !important;
+  min-height: 150px;
+}
+.footer,
+footer {
+  background-color: #000 !important;
+  color: #fff !important;
+  padding: 0.6rem 0;
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1rem;
+}
+.footer .row h5,
+.footer .row p {
+  color: #fff !important;
+  font-size: 1rem !important;
+  margin-bottom: 0.6rem;
+}
+.footer hr {
+  border-color: #fff;
+  opacity: 0.3;
+  margin: 0.5rem 0;
+}
+.footer .card {
+  background-color: #111 !important;
+  color: #fff !important;
+}
+.footer .btn-primary {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #000;
+}
+.footer .btn-primary:hover {
+  background-color: #e0a800;
+  color: #000;
+}
+.btn-outline-success {
+  color: #ffc107;
+  border-color: #ffc107;
+}
+.btn-outline-success:hover {
+  background-color: #ffc107;
+  color: #000;
+}
+.modal-body {
+  font-size: 1rem;
+  color: #fff !important;
+  background: #111 !important;
+}
+.modal-title {
+  font-weight: bold;
+  color: #fff !important;
+}
+
+/* Estilos para el modal */
+.mb-0 text-dark{
+  color:white;
+}
+
+.modal-content-custom {
+  background-color: #000000; /* Fondo oscuro para contraste */
+  color: white; /* Texto blanco */
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
+}
+
+/* Título del modal */
+.modal-content-custom h2 {
+  color: white; /* Blanco */
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+/* Texto del modal */
+.modal-content-custom p {
+  color: white; /* Blanco */
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+/* Botón cerrar */
+.modal-content-custom button {
+  background-color: #ffc107;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  color: rgb(255, 255, 255);
+}
+
+.modal-content-custom button:hover {
+  background-color: #e6b800;
+  color: #000;
+}
+
+/* Responsive improvements for Perfil */
+
+/* Logo container responsive */
+.logo-container {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Purpose section responsive */
+.purpose-section {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 30px;
+  margin: 20px 0;
+}
+
+.typewriter-text {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  text-align: justify;
+  color: #fff !important;
+  min-height: 150px;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1200px) {
+  .Titulo {
+    font-size: 2.5rem;
+    margin-top: 3rem;
+  }
+
+  .perfil-image {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+@media (max-width: 992px) {
+  .Titulo {
+    font-size: 2.2rem;
+    margin-top: 2.5rem;
+  }
+
+  .perfil-image {
+    width: 160px;
+    height: 160px;
+  }
+
+  .Cabeza {
+    font-size: 1.8rem;
+  }
+
+  .typewriter-text {
+    font-size: 1.1rem;
+  }
+
+  .purpose-section {
+    padding: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 1rem;
+    padding-top: 60px;
+  }
+
+  .Titulo {
+    font-size: 1.8rem;
+    margin-top: 2rem;
+    padding: 0 15px;
+  }
+
+  .perfil-image {
+    width: 140px;
+    height: 140px;
+  }
+
+  .Cabeza {
+    font-size: 1.6rem;
+  }
+
+  .typewriter-text {
+    font-size: 1rem;
+    text-align: left;
+  }
+
+  .purpose-section {
+    padding: 20px 15px;
+    margin: 15px 0;
+  }
+
+  /* Navbar responsive */
+  .navbar-collapse {
+    background-color: rgba(0, 0, 0, 0.95);
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 15px;
+  }
+
+  /* Search form responsive */
+  #searchForm {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  #searchInput {
+    flex: 1;
+  }
+
+  /* Footer responsive */
+  .footer {
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .Titulo {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .perfil-image {
+    width: 120px;
+    height: 120px;
+    border-width: 3px;
+    padding: 8px;
+  }
+
+  .Cabeza {
+    font-size: 1.4rem;
+    margin-top: 0.8rem;
+  }
+
+  .typewriter-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    min-height: 120px;
+  }
+
+  .purpose-section {
+    padding: 15px 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .Titulo {
+    font-size: 1.3rem;
+  }
+
+  .perfil-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .Cabeza {
+    font-size: 1.2rem;
+  }
+
+  .typewriter-text {
+    font-size: 0.9rem;
+    min-height: 100px;
+  }
+}
+
+/* Container improvements */
+.container-fluid,
+.container {
+  max-width: 100%;
+}
+
+/* Text improvements for small screens */
+@media (max-width: 768px) {
+  .text-break {
+    text-align: left;
+    padding: 0;
+  }
+}

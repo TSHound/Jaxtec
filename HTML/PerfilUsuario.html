@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Perfil de Usuario - JAXTEC</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../CSS/PerfilUsuario.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" style="padding: 0; margin-right: 18px">
+          <img src="../Imagenes/TrueLogo.png" alt="JAXTEC Logo" />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 1rem">
+            <li class="nav-item">
+              <a class="nav-link" href="Inicio.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Perfil.html">Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Tienda.html">Tienda</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                data-bs-toggle="dropdown"
+                >Tecnología</a
+              >
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="Vehiculos.html">Vehículos</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="Baterias.html">Baterías</a>
+                </li>
+                <li><a class="dropdown-item" href="Vision.html">Visión</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a id="formularioLink" class="nav-link" href="#">Formulario</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="LogIn.html">Log In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="PerfilUsuario.html">Perfil</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+      <h1 class="mb-4">Perfil de Usuario</h1>
+      <section>
+        <h2 class="section-title">Información personal</h2>
+        <p><strong>Nombre:</strong> Juan Pérez</p>
+        <p><strong>Correo:</strong> juan.perez@example.com</p>
+        <p><strong>Teléfono:</strong> +52 55 1234 5678</p>
+        <p>
+          <strong>Dirección:</strong> Av. Innovación 456, Ciudad Tecnológica,
+          México
+        </p>
+      </section>
+
+      <section class="mt-5">
+        <h2 class="section-title">Compras previas</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2025-07-15</td>
+              <td>Brake Disc</td>
+              <td>2</td>
+              <td>$150.00</td>
+            </tr>
+            <tr>
+              <td>2025-07-10</td>
+              <td>Spark Plug</td>
+              <td>4</td>
+              <td>$32.00</td>
+            </tr>
+            <tr>
+              <td>2025-06-25</td>
+              <td>Car Battery</td>
+              <td>1</td>
+              <td>$120.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="mt-5">
+        <button class="btn-logout">Cerrar sesión</button>
+      </section>
+    </div>
+
+    <!-- Modal -->
+    <div id="loginModal" class="custom-modal" role="dialog">
+      <div class="custom-modal-content">
+        <h2>Atención</h2>
+        <p>Debes iniciar sesión para acceder al formulario.</p>
+        <button id="closeModalBtn">Cerrar</button>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../JS/PerfilUsuario.js"></script>
+  </body>
+</html>

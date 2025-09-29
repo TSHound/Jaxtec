@@ -1,0 +1,264 @@
+<!--
+  Perfil.html - Página de perfil/nosotros de JAXTEC
+  Estructura:
+    - Navbar de navegación
+    - Título y logo de la empresa
+    - Propósito con efecto máquina de escribir
+    - Footer institucional con redes y referencias
+    - Buscador de palabras clave en la página
+    - Estilos personalizados y Bootstrap
+-->
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil - JAXTEC</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- CSS externo para Perfil -->
+    <link rel="stylesheet" href="../CSS/Perfil.css" />
+    <script src="../JS/Perfil.js"></script>
+  </head>
+
+  <body>
+    <!-- Navbar de navegación principal -->
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" style="padding: 0; margin-right: 18px">
+          <img
+            src="../Imagenes/TrueLogo.png"
+            alt="JAXTEC Logo"
+            style="
+              height: 44px;
+              width: auto;
+              display: inline-block;
+              vertical-align: middle;
+              margin-right: 6px;
+            "
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 1rem">
+            <li class="nav-item">
+              <a class="nav-link" href="Inicio.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Perfil.html">Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Tienda.html">Tienda</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Tecnología
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="Vehiculos.html">Vehículos</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="Baterias.html">Baterías</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="Vision.html">Visión</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="LogIn.html">Formulario</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="LogIn.html">Log In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="PerfilUsuario.html">Perfil</a>
+            </li>
+          </ul>
+
+          <!-- Buscador en la navbar -->
+          <form id="searchForm" class="d-flex" role="search">
+            <input
+              id="searchInput"
+              class="form-control me-2"
+              type="search"
+              placeholder="Buscar"
+              aria-label="Buscar"
+              style="
+                font-size: 0.95rem;
+                height: 34px;
+                border-radius: 0.3rem;
+                border: 2px solid #ffc107;
+                background: #fff;
+                color: #000;
+                padding: 0.25rem 0.75rem;
+              "
+            />
+            <button
+              class="btn btn-outline-success btn-buscar"
+              type="submit"
+              style="
+                color: #ffc107;
+                border-color: #ffc107;
+                font-size: 0.95rem;
+                height: 34px;
+                border-radius: 0.3rem;
+                background: transparent;
+                margin-left: 0.5rem;
+                transition: background 0.3s, color 0.3s;
+                font-weight: normal;
+              "
+              onmouseover="this.style.backgroundColor='#ffc107';this.style.color='#fff';"
+              onmouseout="this.style.backgroundColor='transparent';this.style.color='#ffc107';"
+            >
+              Buscar
+            </button>
+          </form>
+        </div>
+      </div>
+
+       <!-- Icono carrito -->
+          <a
+            href="carrito.html"
+            class="ms-3 d-flex align-items-center"
+            title="Carrito de compras"
+            style="color: #ffc107; font-size: 1.5rem"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              class="bi bi-cart"
+              viewBox="0 0 16 16"
+              style="width: 24px; height: 24px"
+            >
+              <path
+                d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 5H14.5a.5.5 0 0 1 .49.598l-1.5 7A.5.5 0 0 1 13 13H4a.5.5 0 0 1-.491-.408L1.01 2H.5a.5.5 0 0 1-.5-.5zm3.14 4l1.25 6h7.22l1.25-6H3.14z"
+              />
+              <path
+                d="M5.5 14a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    </nav>
+
+    <!-- Título y logo de la empresa -->
+    <div class="container-fluid px-3">
+      <div class="row justify-content-center text-center">
+        <div class="col-12">
+          <h1 class="Titulo mb-4">JAXTEC - Perfil</h1>
+          <div class="logo-container mb-4">
+            <img
+              src="../Imagenes/logojaxtec.png"
+              class="perfil-image img-fluid"
+              alt="Logo JAXTEC"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Propósito con efecto máquina de escribir -->
+    <div class="container px-3">
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-12">
+          <div class="purpose-section">
+            <p class="Cabeza text-center mb-4">Propósito</p>
+            <p class="text-break typewriter-text" id="typewriter"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer institucional con información de contacto -->
+    <footer class="footer">
+      <div class="container px-3">
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6 col-12 mb-3">
+            <h5 class="text-warning mb-3">Sobre JAXTEC</h5>
+            <p class="text-white-50">
+              Fabricamos autos eléctricos con visión sustentable, tecnología
+              inteligente y compromiso con el medio ambiente.
+            </p>
+          </div>
+          <div class="col-lg-4 col-md-6 col-12 mb-3">
+            <h5 class="text-warning mb-3">Contáctanos</h5>
+            <p class="text-white-50 mb-1">info@jaxtec.com</p>
+            <p class="text-white-50">+52 55 1234 5678</p>
+          </div>
+          <div class="col-lg-4 col-md-12 col-12 mb-3">
+            <h5 class="text-warning mb-3">Ubicación</h5>
+            <p class="text-white-50 mb-1">Av. Innovación 456</p>
+            <p class="text-white-50">Ciudad Tecnológica, México</p>
+          </div>
+        </div>
+        <hr class="border-secondary my-4" />
+        <div class="row">
+          <div class="col-12 text-center">
+            <p class="mb-0 text-white-50 small">
+              &copy; 2025 JAXTEC. Todos los derechos reservados. | Innovación en
+              movilidad eléctrica.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ======= Modal (solo al dar clic en "Formulario" si no hay sesión) ======= -->
+    <div
+      class="modal fade"
+      id="mustLoginModal"
+      tabindex="-1"
+      aria-hidden="true"
+      aria-labelledby="mustLoginModalLabel"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+       <div class="modal-content modal-content-custom">
+
+          <div class="modal-header">
+            <h5 id="mustLoginModalLabel" class="modal-title text-dark">Atención</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-0">Debes iniciar sesión para acceder al formulario.</p>
+          </div>
+       
+        </div>
+      </div>
+    </div>
+    <!-- =============================================================== -->
+
+    <!-- Scripts: Bootstrap, buscador y personalizado -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

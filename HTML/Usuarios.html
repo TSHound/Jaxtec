@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin - Usuarios - JAXTEC</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../CSS/Usuarios.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img
+            src="../Imagenes/TrueLogo.png"
+            alt="JAXTEC Logo"
+            style="height: 44px; margin-right: 6px"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 1rem">
+            <li class="nav-item">
+              <a class="nav-link" href="Inicio.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Stock.html">Stock</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Proveedores.html">Proveedores</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="Usuarios.html">Usuarios</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Pedidos.html">Pedidos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Cotizaciones.html">Cotizaciones</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="LogIn.html">Log In</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container" role="main">
+      <h1>Gestión de Usuarios</h1>
+
+      <button
+        class="btn-add"
+        type="button"
+        onclick="alert('Aquí abrirías el formulario para agregar usuario')"
+      >
+        + Agregar Usuario
+      </button>
+
+      <table aria-label="Lista de usuarios">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="usuariosTableBody">
+          <tr>
+            <td>1</td>
+            <td>Carlos Méndez</td>
+            <td>carlos@ejemplo.com</td>
+            <td>Administrador</td>
+            <td>Activo</td>
+            <td>
+              <button class="btn-edit" onclick="alert('Editar usuario 1')">
+                Editar
+              </button>
+              <button class="btn-delete" onclick="alert('Eliminar usuario 1')">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Lucía Ramírez</td>
+            <td>lucia@ejemplo.com</td>
+            <td>Usuario</td>
+            <td>Inactivo</td>
+            <td>
+              <button class="btn-edit" onclick="alert('Editar usuario 2')">
+                Editar
+              </button>
+              <button class="btn-delete" onclick="alert('Eliminar usuario 2')">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          <!-- Más filas según usuarios -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- External JavaScript -->
+    <script src="../JS/Usuarios.js"></script>
+  </body>
+</html>

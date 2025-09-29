@@ -1,0 +1,269 @@
+<!--
+  Formulario.html - Página de formulario de pedido de vehículo para JAXTEC
+  Estructura:
+    - Navbar de navegación
+    - Formulario de pedido con campos validados
+    - Botón para mostrar y eliminar pedidos del usuario logueado
+    - Visualización de pedidos del usuario
+    - Footer fijo
+    - Estilos personalizados y Bootstrap
+-->
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulario de Pedido - JAXTEC</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+    <!-- CSS externo para Formulario -->
+    <link rel="stylesheet" href="../CSS/Formulario.css" />
+  </head>
+  <body>
+    <!-- Navbar de navegación principal -->
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" style="padding:0; margin-right:18px;">
+          <img src="../Imagenes/TrueLogo.png" alt="JAXTEC Logo" style="height:44px; width:auto; display:inline-block; vertical-align:middle; margin-right:6px;">
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size:1rem;">
+            <li class="nav-item">
+              <a class="nav-link" href="Inicio.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Perfil.html">Nosotros</a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href="Tienda.html">Tienda</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Tecnología
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="Vehiculos.html">Vehículos</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="Baterias.html">Baterías</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="Vision.html">Visión</a>
+                </li>
+              </ul>   
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Formulario.html">Formulario</a>
+            </li>
+            
+             <li class="nav-item">
+              <a class="nav-link" href="PerfilUsuario.html">Perfil</a>
+            </li>
+          </ul>
+          
+          <!-- Buscador en la navbar -->
+          <form id="searchForm" class="d-flex" role="search">
+            <input
+              id="searchInput"
+              class="form-control me-2"
+              type="search"
+              placeholder="Buscar"
+              aria-label="Buscar"
+              style="font-size: 0.95rem; height: 34px; border-radius: 0.3rem; border: 2px solid #ffc107; background: #fff; color: #000; padding: 0.25rem 0.75rem;"
+            />
+            <button
+              class="btn btn-outline-success btn-buscar"
+              type="submit"
+              style="color: #ffc107; border-color: #ffc107; font-size: 0.95rem; height: 34px; border-radius: 0.3rem; background: transparent; margin-left: 0.5rem; transition: background 0.3s, color 0.3s; font-weight: normal;"
+              onmouseover="this.style.backgroundColor='#ffc107';this.style.color='#fff';"
+              onmouseout="this.style.backgroundColor='transparent';this.style.color='#ffc107';"
+            >
+              Buscar
+            </button>
+          </form>
+        </div>
+      </div>
+       <!-- Icono carrito -->
+          <a
+            href="carrito.html"
+            class="ms-3 d-flex align-items-center"
+            title="Carrito de compras"
+            style="color: #ffc107; font-size: 1.5rem"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              class="bi bi-cart"
+              viewBox="0 0 16 16"
+              style="width: 24px; height: 24px"
+            >
+              <path
+                d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 5H14.5a.5.5 0 0 1 .49.598l-1.5 7A.5.5 0 0 1 13 13H4a.5.5 0 0 1-.491-.408L1.01 2H.5a.5.5 0 0 1-.5-.5zm3.14 4l1.25 6h7.22l1.25-6H3.14z"
+              />
+              <path
+                d="M5.5 14a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    </nav>
+
+    <!-- Título principal -->
+    <div class="container-fluid px-3">
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <h1 class="Titulo mt-4 mb-4">Formulario de Pedido de Vehículo</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección principal del formulario de pedido -->
+    <div class="container px-3">
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-12">
+          <div class="form-section">
+            <form id="pedidoForm" autocomplete="off">
+              <div class="row g-3">
+                <!-- Usuario logueado (readonly) -->
+                <div class="col-lg-6 col-md-12">
+                  <label for="usuario_logueado" class="form-label">Usuario</label>
+                  <input type="text" class="form-control bg-light" id="usuario_logueado" readonly>
+                </div>
+                <!-- Espacio vacío para alinear en desktop -->
+                <div class="col-lg-6 d-none d-lg-block"></div>
+                
+                <!-- Placas del vehículo -->
+                <div class="col-lg-6 col-md-12">
+                  <label for="placa_vehiculo" class="form-label">Placas del vehículo</label>
+                  <input type="text" class="form-control" id="placa_vehiculo" maxlength="20" required>
+                </div>
+                <!-- Modelo del vehículo -->
+                <div class="col-lg-6 col-md-12">
+                  <label for="modelo_vehiculo" class="form-label">Modelo del vehículo</label>
+                  <input type="text" class="form-control" id="modelo_vehiculo" maxlength="100" required>
+                </div>
+                
+                <!-- Año, Tipo de combustible y Estado del vehículo -->
+                <div class="col-lg-4 col-md-6 col-12">
+                  <label for="año_vehiculo" class="form-label">Año</label>
+                  <input type="number" class="form-control" id="año_vehiculo" min="1900" max="2099" required>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                  <label for="tipo_combustible" class="form-label">Tipo de combustible</label>
+                  <select class="form-select" id="tipo_combustible" required>
+                    <option value="">Selecciona...</option>
+                    <option>Gasolina</option>
+                    <option>Diesel</option>
+                    <option>Otro</option>
+                  </select>
+                </div>
+                <div class="col-lg-4 col-md-12 col-12">
+                  <label for="estado_vehiculo" class="form-label">Estado del vehículo</label>
+                  <input type="text" class="form-control" id="estado_vehiculo" maxlength="100" required>
+                </div>
+                
+                <!-- Kilometraje y Ubicación -->
+                <div class="col-lg-6 col-md-12">
+                  <label for="kilometraje" class="form-label">Kilometraje</label>
+                  <input type="number" class="form-control" id="kilometraje" min="0" required>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <label for="ubicacion" class="form-label">Ubicación</label>
+                  <input type="text" class="form-control" id="ubicacion" maxlength="100" required>
+                </div>
+          <!-- Fecha de solicitud (readonly) -->
+          <div class="col-md-6">
+            <label for="fecha_solicitud" class="form-label">Fecha de solicitud</label>
+            <input type="date" class="form-control bg-light" id="fecha_solicitud" readonly required>
+          </div>
+          <!-- Comentarios adicionales -->
+          <div class="col-12">
+            <label for="comentarios_adicionales" class="form-label">Comentarios adicionales</label>
+            <textarea class="form-control" id="comentarios_adicionales" rows="3"></textarea>
+          </div>
+        </div>
+        <!-- Botones de acción -->
+        <div class="mt-4 text-end">
+          <button type="submit" class="btn btn-warning px-4">Enviar Pedido</button>
+          <button type="button" class="btn btn-danger px-4 ms-2" id="btnEliminarPedidos">Mis Pedidos</button>
+        </div>
+              </form>
+              <!-- Mensaje de feedback del formulario -->
+              <div id="formMsg" class="mt-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualización de los pedidos del usuario logueado -->
+    <div class="container px-3">
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-12">
+          <div id="misPedidos" class="pedidos-section" style="display:none;">
+            <h4 class="text-warning mb-3">Mis pedidos</h4>
+            <div id="listaPedidos" class="pedidos-container"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer institucional -->
+    <footer class="footer">
+      <div class="container px-3">
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6 col-12 mb-3">
+            <h5 class="text-warning mb-3">Sobre JAXTEC</h5>
+            <p class="text-white-50">
+              Fabricamos autos eléctricos con visión sustentable, tecnología
+              inteligente y compromiso con el medio ambiente.
+            </p>
+          </div>
+          <div class="col-lg-4 col-md-6 col-12 mb-3">
+            <h5 class="text-warning mb-3">Contáctanos</h5>
+            <p class="text-white-50 mb-1">info@jaxtec.com</p>
+            <p class="text-white-50">+52 55 1234 5678</p>
+          </div>
+          <div class="col-lg-4 col-md-12 col-12 mb-3">
+            <h5 class="text-warning mb-3">Ubicación</h5>
+            <p class="text-white-50 mb-1">Av. Innovación 456</p>
+            <p class="text-white-50">Ciudad Tecnológica, México</p>
+          </div>
+        </div>
+        <hr class="border-secondary my-4" />
+        <div class="row">
+          <div class="col-12 text-center">
+            <p class="mb-0 text-white-50 small">&copy; 2025 JAXTEC. Todos los derechos reservados. | Innovación en movilidad eléctrica.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS y tu JS principal -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../JS/Formulario.js"></script>
+  </body>
+</html>

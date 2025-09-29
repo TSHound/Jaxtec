@@ -1,0 +1,166 @@
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #000;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #000;
+}
+.navbar .navbar-brand img {
+  height: 44px;
+  width: auto;
+}
+.navbar .nav-link {
+  color: #fff;
+  font-weight: 600;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: #ffc107;
+}
+.navbar-toggler {
+  border-color: #ffc107;
+}
+.navbar-toggler-icon {
+  filter: invert(100%);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  background: #121212;
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 3px 8px rgb(255 193 7 / 0.3);
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 2.4rem;
+  margin-bottom: 25px;
+  color: #ffc107;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #eee;
+}
+thead {
+  background-color: #222;
+}
+thead th {
+  padding: 12px;
+  border-bottom: 2px solid #ffc107;
+  text-align: left;
+}
+tbody tr:hover {
+  background-color: #333;
+}
+tbody td {
+  padding: 12px;
+  border-bottom: 1px solid #444;
+}
+
+/* Botones */
+.btn-add {
+  background-color: #28a745;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+.btn-add:hover {
+  background-color: #218838;
+}
+.btn-edit {
+  background-color: #ffc107;
+  color: #000;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 8px;
+}
+.btn-edit:hover {
+  background-color: #d99a00;
+}
+.btn-delete {
+  background-color: #d9534f;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn-delete:hover {
+  background-color: #c9302c;
+}
+
+/* Responsive tabla */
+@media (max-width: 768px) {
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  tbody tr {
+    margin-bottom: 1rem;
+    background-color: #222;
+    border-radius: 8px;
+    padding: 10px;
+  }
+  tbody td {
+    border: none;
+    padding: 10px 10px 10px 40%;
+    position: relative;
+  }
+  tbody td::before {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 35%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #ffc107;
+  }
+  tbody td:nth-of-type(1)::before {
+    content: "ID";
+  }
+  tbody td:nth-of-type(2)::before {
+    content: "Nombre";
+  }
+  tbody td:nth-of-type(3)::before {
+    content: "Contacto";
+  }
+  tbody td:nth-of-type(4)::before {
+    content: "Teléfono";
+  }
+  tbody td:nth-of-type(5)::before {
+    content: "Correo";
+  }
+  tbody td:nth-of-type(6)::before {
+    content: "Acciones";
+  }
+}

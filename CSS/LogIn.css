@@ -1,0 +1,357 @@
+body {
+  background-color: #000 !important;
+  color: #fff !important;
+  font-family: "Montserrat", Arial, sans-serif !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+}
+
+/* Responsive improvements for LogIn */
+
+/* Main container */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Login wrapper */
+.login-wrapper {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(34, 34, 34, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.login-title {
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  color: #ffc107;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Form styles */
+.login-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  font-weight: 500;
+  text-align: left;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border: 2px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #ffc107;
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+}
+
+/* Button styles */
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-bottom: 1rem;
+  text-transform: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ffc107, #ff8f00);
+  color: #000;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+  border: none;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-transform: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #ff8f00, #ffc107);
+  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #ffc107;
+  border: 2px solid #ffc107;
+}
+
+.btn-secondary:hover {
+  background: #ffc107;
+  color: #000;
+}
+
+/* Error and success messages */
+.error,
+.error-message {
+  color: #ff4444;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  text-align: left;
+}
+
+.success-message {
+  color: #00ff00;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: rgba(34, 34, 34, 0.95);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.modal-title {
+  color: #ffc107;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+  color: #ffc107;
+}
+
+.register-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.register-message {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Background improvements */
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.fondoOOT {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .main-container {
+    padding: 15px;
+  }
+
+  .login-wrapper {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  .login-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-input {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    margin: 10px;
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-container {
+    padding: 10px;
+  }
+
+  .login-wrapper {
+    padding: 1rem;
+  }
+
+  .login-title {
+    font-size: 1.5rem;
+  }
+
+  .form-input {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .modal-content {
+    padding: 1rem;
+  }
+
+  .modal-title {
+    font-size: 1.3rem;
+  }
+}
+
+/* --- ESTILOS UNIFICADOS Y ESTANDARIZADOS PARA LOGIN --- */
+
+.btn-primary {
+  background: linear-gradient(135deg, #ffc107, #ff8f00);
+  color: #000;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+  border: none;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-transform: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #ff8f00, #ffc107);
+  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+  transform: translateY(-2px);
+}
+
+.error,
+.error-message {
+  color: #ff4444;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  text-align: left;
+}
+
+.success-message {
+  color: #00ff00;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+#createAccountForm {
+  background: #fff;
+  color: #000;
+  border-radius: 12px;
+  padding: 20px 25px;
+  margin-top: 20px;
+  max-width: 420px;
+  box-shadow: 0 3px 8px rgb(0 0 0 / 0.15);
+  display: none;
+}
+
+#createAccountForm label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+#createAccountForm input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  font-size: 1rem;
+}
+
+#createAccountForm button {
+  margin-top: 20px;
+  width: 100%;
+}

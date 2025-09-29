@@ -1,0 +1,239 @@
+/* Vehiculos.css */
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #18191a !important;
+  margin: 0;
+  padding-top: 70px;
+  font-size: 1rem;
+  color: #fff;
+}
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+}
+.background-container img.fondo {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.15;
+}
+.background-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.15;
+}
+.navbar {
+  background-color: #000 !important;
+  backdrop-filter: none;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+.navbar .nav-link,
+.navbar .navbar-brand {
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.navbar .nav-link {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.navbar .nav-link:hover {
+  color: #ffc107 !important;
+}
+@media (max-width: 991.98px) {
+  .navbar .nav-link,
+  .navbar .navbar-brand {
+    font-size: 0.95rem;
+  }
+}
+.Titulo {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ffc107 !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+@media (max-width: 1200px) {
+  .Titulo {
+    font-size: 2.5rem;
+  }
+}
+@media (max-width: 768px) {
+  .Titulo {
+    font-size: 2rem;
+    margin-top: 2rem !important;
+  }
+}
+@media (max-width: 576px) {
+  .Titulo {
+    font-size: 1.6rem;
+    margin-top: 1.5rem !important;
+  }
+}
+.JAXTEC-img {
+  width: 80%;
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto 20px auto;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-height: 400px;
+  object-fit: cover;
+}
+.JAXTEC-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 35px rgba(255, 193, 7, 0.3);
+}
+@media (max-width: 768px) {
+  .JAXTEC-img {
+    max-height: 300px;
+    margin-bottom: 20px;
+  }
+}
+@media (max-width: 576px) {
+  .JAXTEC-img {
+    max-height: 250px;
+    margin-bottom: 15px;
+  }
+}
+.container {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  transform: none;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.accordion {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+.accordion-item {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  border: 1px solid rgba(255, 193, 7, 0.3) !important;
+}
+.accordion-button {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+  color: #fff !important;
+  font-weight: 600;
+  border: none !important;
+  font-size: 1.1rem;
+}
+.accordion-button:not(.collapsed) {
+  background-color: rgba(255, 193, 7, 0.2) !important;
+  color: #ffc107 !important;
+  box-shadow: none !important;
+}
+.accordion-button:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25) !important;
+}
+.accordion-body {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  color: #fff !important;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 1.5rem;
+}
+@media (max-width: 768px) {
+  .accordion-button {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .accordion-body {
+    font-size: 0.95rem;
+    padding: 1rem;
+  }
+}
+@media (max-width: 576px) {
+  .accordion-button {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .accordion-body {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+}
+.row.g-4 {
+  margin-bottom: 3rem;
+}
+@media (max-width: 768px) {
+  .row.g-4 {
+    margin-bottom: 2rem;
+  }
+}
+@media (max-width: 576px) {
+  .row.g-4 {
+    margin-bottom: 1.5rem;
+  }
+}
+@media (max-width: 768px) {
+  .background-container img {
+    opacity: 0.1;
+  }
+
+  body {
+    padding-top: 60px;
+  }
+}
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background-color: rgba(0, 0, 0, 0.95);
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 15px;
+  }
+}
+@media (max-width: 768px) {
+  #searchForm {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  #searchInput {
+    flex: 1;
+  }
+}
+@media (max-width: 768px) {
+  .footer {
+    text-align: center;
+  }
+}
+@media (max-width: 768px) {
+  .col-lg-6,
+  .col-md-12 {
+    margin-bottom: 1rem;
+  }
+
+  .order-1 {
+    order: 1 !important;
+  }
+
+  .order-2 {
+    order: 2 !important;
+  }
+}
+@media (max-width: 768px) {
+  body {
+    font-size: 0.95rem;
+  }
+}
+@media (max-width: 576px) {
+  body {
+    font-size: 0.9rem;
+  }
+}

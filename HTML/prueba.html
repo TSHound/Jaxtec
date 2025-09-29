@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Prueba Checkout</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <button id="checkout">Pagar con Stripe Checkout</button>
+
+  <script>
+    const stripe = Stripe('pk_test_XXXXXXXXXXXXXXXX'); // tu clave pública
+
+    document.getElementById('checkout').addEventListener('click', async () => {
+      try {
+        const response = await fetch('/create-checkout-session', { method: 'POST' });
+        const session = await response.json();
+
+        if (session.id) {
+          stripe.redirectToCheckout({ sessionId: session.id });
+        } else {
+          alert('Error creando sesión de pago');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error al conectar con el servidor');
+      }
+    });
+  </script>
+</body>
+</html>

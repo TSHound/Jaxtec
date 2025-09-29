@@ -1,0 +1,493 @@
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #18191a !important;
+  margin: 0;
+  padding-top: 70px;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.navbar {
+  background-color: #000 !important;
+  backdrop-filter: none;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand {
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.navbar .nav-link {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.navbar .nav-link:hover {
+  color: #ffc107 !important;
+}
+
+@media (max-width: 991.98px) {
+  .navbar .nav-link,
+  .navbar .navbar-brand {
+    font-size: 0.95rem;
+  }
+}
+
+.logo-section {
+  position: relative;
+  text-align: center;
+  color: white;
+  overflow: hidden;
+  margin-top: -70px;
+  padding: 120px 20px 80px;
+}
+
+@media (max-width: 991.98px) {
+  .logo-section {
+    padding-top: 110px;
+    padding-bottom: 60px;
+  }
+  #seccion-imagen {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .logo-section {
+    padding-top: 90px;
+    padding-bottom: 40px;
+  }
+  #seccion-imagen {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.logo-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../Imagenes/electromovilidad4.png");
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.5);
+  z-index: 0;
+}
+
+.logo-section img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+  z-index: 1;
+  position: relative;
+  border: 4px solid white;
+  background-color: white;
+  padding: 5px;
+}
+
+.logo-section p {
+  font-size: 1.3rem;
+  margin-top: 15px;
+  z-index: 1;
+  position: relative;
+}
+
+.carousel {
+  max-width: 1400px;
+  margin: 40px auto;
+}
+
+.carousel-inner img {
+  height: 600px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.carousel-img {
+  height: 400px;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .carousel-img {
+    height: 250px;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel-img {
+    height: 200px;
+  }
+}
+
+.section {
+  padding: 60px 20px;
+}
+
+.section img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.text-yellow {
+  color: #ffc107;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.giant-image {
+  background-image: url("../Imagenes/electromovilidad4.png");
+  background-size: cover;
+  background-position: center;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
+  color: white;
+  position: relative;
+}
+
+.giant-image::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.giant-image .text-box {
+  position: relative;
+  background-color: rgba(255, 204, 0, 0.85);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 600px;
+  color: #000;
+}
+
+.giant-image .text-box h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.giant-image .text-box p {
+  font-size: 1rem !important;
+}
+
+footer,
+.footer {
+  background-color: #000 !important;
+  color: #fff !important;
+  padding: 0.6rem 0;
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1rem;
+}
+
+.footer .row h5,
+.footer .row p {
+  color: #fff !important;
+  font-size: 1rem !important;
+  margin-bottom: 0.6rem;
+}
+
+.footer hr {
+  border-color: #fff;
+  opacity: 0.3;
+  margin: 0.5rem 0;
+}
+
+#seccion-imagen {
+  padding-left: 265px;
+  padding-right: 350px;
+  margin-top: 0;
+}
+
+#seccion-imagen .row.align-items-center {
+  flex-wrap: wrap;
+}
+#seccion-imagen .col-md-6:first-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+#img-innovacion {
+  border: 3px solid #ffc107;
+  max-width: 100%;
+  width: 350px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+@media (min-width: 992px) {
+  #seccion-imagen .col-md-6:first-child {
+    margin-bottom: 0;
+  }
+  #img-innovacion {
+    max-width: 400px;
+    margin-right: 30px;
+  }
+  #seccion-imagen .col-md-6:last-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 320px;
+  }
+}
+@media (max-width: 991.98px) {
+  #img-innovacion {
+    max-width: 320px;
+  }
+  #seccion-imagen .col-md-6:last-child {
+    min-height: unset;
+  }
+}
+@media (max-width: 575.98px) {
+  #img-innovacion {
+    max-width: 90vw;
+  }
+}
+
+/* Additional responsive improvements */
+.model-card {
+  transition: transform 0.3s ease;
+}
+
+.model-card:hover {
+  transform: translateY(-5px);
+}
+
+.model-card img {
+  transition: transform 0.3s ease;
+}
+
+.model-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Responsive navbar improvements */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background-color: rgba(0, 0, 0, 0.95);
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 15px;
+  }
+}
+
+/* Search form responsive */
+@media (max-width: 768px) {
+  #searchForm {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  #searchInput {
+    flex: 1;
+  }
+}
+
+/* Logo section responsive */
+@media (max-width: 768px) {
+  .logo-section {
+    padding: 100px 15px 60px;
+  }
+
+  .logo-section img {
+    max-width: 80%;
+    height: auto;
+  }
+
+  .logo-section p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .logo-section {
+    padding: 80px 10px 50px;
+  }
+
+  .logo-section p {
+    font-size: 1rem;
+  }
+}
+
+/* Section spacing improvements */
+.section {
+  padding: 60px 0;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 40px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .section {
+    padding: 30px 0;
+  }
+}
+
+/* Giant image responsive */
+.giant-image {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 400px;
+}
+
+@media (max-width: 768px) {
+  .giant-image {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 576px) {
+  .giant-image {
+    min-height: 250px;
+  }
+
+  .giant-image .text-box {
+    padding: 20px;
+  }
+
+  .giant-image .text-box h2 {
+    font-size: 1.5rem;
+  }
+
+  .giant-image .text-box p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Footer responsive improvements */
+.footer {
+  margin-top: 60px;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    text-align: center;
+  }
+}
+
+/* Remove excessive padding from seccion-imagen */
+@media (max-width: 1200px) {
+  #seccion-imagen {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+/* Improve video container responsiveness */
+.video-container {
+  max-width: 100%;
+}
+
+/* Typography responsive improvements */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  .text-yellow {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .text-yellow {
+    font-size: 1.5rem;
+  }
+}
+
+/* --- Estilos migrados del <style> de Inicio.html --- */
+.modal-custom {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  align-items: center;
+  justify-content: center;
+}
+.modal-content-custom p#modalDesc {
+  color: #000000;
+}
+.modal-content-custom {
+  background: white;
+  border-radius: 12px;
+  padding: 20px 30px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+.modal-content-custom h2 {
+  margin-bottom: 15px;
+  color: #ffc107;
+}
+.modal-content-custom button {
+  background-color: #ffc107;
+  border: none;
+  padding: 10px 25px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #000;
+  font-size: 1rem;
+}
+.modal-content-custom button:hover {
+  background-color: #e6b800;
+}
+/* --- Fin estilos migrados --- */

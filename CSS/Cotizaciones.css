@@ -1,0 +1,51 @@
+body {
+  background-color: #1c1c1c;
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+}
+.table-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 15px;
+}
+h2 {
+  color: #f5b400;
+  margin-bottom: 20px;
+}
+table {
+  background-color: #2a2a2a;
+  border: 1px solid #f5b400;
+}
+thead th {
+  background-color: #000;
+  color: #f5b400;
+  text-align: center;
+}
+tbody td {
+  text-align: center;
+  vertical-align: middle;
+}
+.btn-delete {
+  background-color: #c62828;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.btn-delete:hover {
+  background-color: #a01414;
+}
+#searchInput {
+  max-width: 400px;
+  margin-bottom: 20px;
+  border: 2px solid #f5b400;
+  border-radius: 4px;
+  padding: 8px 12px;
+  background-color: #1c1c1c;
+  color: #fff;
+}
+#searchInput::placeholder {
+  color: #bbb;
+}

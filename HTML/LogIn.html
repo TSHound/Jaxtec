@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="../CSS/LogIn.css" />
+  </head>
+  
+  <body>
+    <div class="background-container">
+      <img class="fondoOOT" alt="" />
+    </div>
+
+    <div class="main-container">
+      <div class="login-wrapper">
+        <h1 class="login-title">Iniciar Sesión</h1>
+
+  <form id="loginForm" class="login-form" novalidate>
+          <div class="form-group">
+            <label for="username" class="form-label">Nombre de usuario:</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-input"
+            />
+            <div id="usernameError" class="error"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Contraseña:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+            />
+            <div id="passwordError" class="error"></div>
+          </div>
+
+          <button type="submit" id="loginButton" class="btn-primary">
+            Iniciar sesión
+          </button>
+          <div id="registeredMessage" class="success" style="display:none; margin-top:10px;"></div>
+        </form>
+        <div id="loginError" class="error" style="display:none; color:red; margin-top:10px;">
+          Usuario o contraseña incorrectos.
+        </div>
+
+        <button id="showCreateAccount" class="btn-primary">Crear cuenta</button>
+
+  <form id="createAccountForm" style="display:none" novalidate>
+          <label for="newUsername">Nombre de usuario:</label>
+          <input type="text" id="newUsername" name="newUsername" />
+          <div id="newUsernameError" class="error"></div>
+
+          <label for="newPassword">Contraseña:</label>
+          <input type="password" id="newPassword" name="newPassword" />
+          <div id="newPasswordError" class="error"></div>
+
+          <label for="phone">Teléfono:</label>
+          <input type="tel" id="phone" name="phone" />
+          <div id="phoneError" class="error"></div>
+
+          <label for="email">Correo electrónico:</label>
+          <input type="email" id="email" name="email" />
+          <div id="emailError" class="error"></div>
+
+          <label for="address">Dirección:</label>
+          <input type="text" id="address" name="address" />
+          <div id="addressError" class="error"></div>
+
+          <button type="submit" class="btn-primary">Registrar cuenta</button>
+        </form>
+
+        <button id="quoteBtn" class="btn-primary">¿Deseas cotizar?</button>
+
+        <div
+          id="registerSuccess"
+          style="color: green; margin-top: 15px; display: none"
+        >
+          Cuenta creada exitosamente.
+        </div>
+
+        <div
+          id="registerError"
+          class="error"
+          style="margin-top: 15px; display: none"
+        >
+          Por favor corrige los errores en el formulario.
+        </div>
+
+        <div
+          id="quoteError"
+          class="error"
+          style="margin-top: 15px; display: none"
+        >
+          Debes iniciar sesión para poder cotizar.
+        </div>
+      </div>
+    </div>
+
+  <!-- Lógica movida a ../JS/LogIn.js -->
+  <script src="../JS/LogIn.js"></script>
+  </body>
+</html>

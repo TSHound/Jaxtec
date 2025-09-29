@@ -1,0 +1,389 @@
+<!--
+  Baterias.html - Página de tecnología e innovación de JAXTEC (Baterías)
+  Estructura:
+    - Fondo decorativo
+    - Navbar de navegación
+    - Secciones de contenido con imágenes y acordeones
+    - Footer institucional
+    - Buscador de palabras clave en la página
+    - Estilos personalizados y Bootstrap
+-->
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JAXTEC - Tecnología e Innovación</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- CSS externo para Baterias -->
+    <link rel="stylesheet" href="../CSS/Baterias.css" />
+  </head>
+  <body>
+    <!-- Fondo decorativo de la página -->
+    <div class="background-container">
+      <img src="../Imagenes/electromovilidad1.png" alt="Fondo JAXTEC" />
+    </div>
+
+    <!-- Navbar de navegación principal -->
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" style="padding: 0; margin-right: 18px">
+          <img
+            src="../Imagenes/TrueLogo.png"
+            alt="JAXTEC Logo"
+            style="
+              height: 44px;
+              width: auto;
+              display: inline-block;
+              vertical-align: middle;
+              margin-right: 6px;
+            "
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 1rem">
+            <li class="nav-item">
+              <a class="nav-link" href="Inicio.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Perfil.html">Nosotros</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="Tienda.html">Tienda</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Tecnología
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="Vehiculos.html">Vehículos</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="Baterias.html">Baterías</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="Vision.html">Visión</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Formulario.html">Formulario</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="LogIn.html">Log In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="PerfilUsuario.html">Perfil</a>
+            </li>
+          </ul>
+
+          <!-- Buscador en la navbar -->
+          <form id="searchForm" class="d-flex" role="search">
+            <input
+              id="searchInput"
+              class="form-control me-2"
+              type="search"
+              placeholder="Buscar"
+              aria-label="Buscar"
+              style="
+                font-size: 0.95rem;
+                height: 34px;
+                border-radius: 0.3rem;
+                border: 2px solid #ffc107;
+                background: #fff;
+                color: #000;
+                padding: 0.25rem 0.75rem;
+              "
+            />
+            <button
+              class="btn btn-outline-success btn-buscar"
+              type="submit"
+              style="
+                color: #ffc107;
+                border-color: #ffc107;
+                font-size: 0.95rem;
+                height: 34px;
+                border-radius: 0.3rem;
+                background: transparent;
+                margin-left: 0.5rem;
+                transition: background 0.3s, color 0.3s;
+                font-weight: normal;
+              "
+              onmouseover="this.style.backgroundColor='#ffc107';this.style.color='#fff';"
+              onmouseout="this.style.backgroundColor='transparent';this.style.color='#ffc107';"
+            >
+              Buscar
+            </button>
+          </form>
+        </div>
+      </div>
+       <!-- Icono carrito -->
+          <a
+            href="carrito.html"
+            class="ms-3 d-flex align-items-center"
+            title="Carrito de compras"
+            style="color: #ffc107; font-size: 1.5rem"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              class="bi bi-cart"
+              viewBox="0 0 16 16"
+              style="width: 24px; height: 24px"
+            >
+              <path
+                d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 5H14.5a.5.5 0 0 1 .49.598l-1.5 7A.5.5 0 0 1 13 13H4a.5.5 0 0 1-.491-.408L1.01 2H.5a.5.5 0 0 1-.5-.5zm3.14 4l1.25 6h7.22l1.25-6H3.14z"
+              />
+              <path
+                d="M5.5 14a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    </nav>
+
+    <!-- Título principal -->
+    <div class="container-fluid px-3">
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <h1 class="Titulo mt-5 mb-4">Baterías</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido principal: secciones con imágenes y acordeones -->
+    <div class="container py-5 px-3">
+      <!-- Primera sección: IA y baterías -->
+      <div class="row align-items-center g-4 mb-5">
+        <div class="col-lg-6 col-md-12 order-2 order-lg-1">
+          <img
+            src="../Imagenes/electromovilidad8.png"
+            alt="Vehículo JAXTEC"
+            class="content-image img-fluid w-100"
+          />
+        </div>
+        <div class="col-lg-6 col-md-12 order-1 order-lg-2">
+          <div class="accordion" id="accordion1">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseOne"
+                  aria-expanded="true"
+                >
+                  Sistemas Inteligentes de Conducción
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                  JAXTEC integra inteligencia artificial en sus vehículos para
+                  mejorar la seguridad vial, optimizar trayectos y adaptarse al
+                  estilo de conducción del usuario.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseTwo"
+                  aria-expanded="true"
+                >
+                  Baterías de Alto Rendimiento
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                  Nuestras baterías están diseñadas para ofrecer autonomía
+                  extendida, con carga rápida y materiales reciclables,
+                  minimizando el impacto ambiental.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Segunda sección: infraestructura y ciudades inteligentes -->
+      <div class="row align-items-center g-4 mb-5">
+        <div class="col-lg-6 col-md-12">
+          <img
+            src="../Imagenes/electromovilidad5.png"
+            alt="Tecnología JAXTEC"
+            class="content-image img-fluid w-100"
+          />
+        </div>
+        <div class="col-lg-6 col-md-12">
+          <div class="accordion" id="accordion2">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse3"
+                  aria-expanded="true"
+                >
+                  Infraestructura de Carga Inteligente
+                </button>
+              </h2>
+              <div id="collapse3" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                  Ofrecemos estaciones de carga rápida alimentadas con energía
+                  solar para una movilidad verdaderamente limpia y sostenible.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse4"
+                  aria-expanded="true"
+                >
+                  Integración con Ciudades Inteligentes
+                </button>
+              </h2>
+              <div id="collapse4" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                  JAXTEC colabora con gobiernos y municipios para integrar sus
+                  soluciones en proyectos de ciudades inteligentes, promoviendo
+                  una movilidad urbana más eficiente.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Tercera sección: compromiso ambiental y datos -->
+      <div class="row align-items-center g-4 mb-5">
+        <div class="col-lg-6 col-md-12 order-2 order-lg-1">
+          <img
+            src="../Imagenes/electromovilidad6.png"
+            alt="Innovación JAXTEC"
+            class="content-image img-fluid w-100"
+          />
+        </div>
+        <div class="col-lg-6 col-md-12 order-1 order-lg-2">
+          <div class="accordion" id="accordion3">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse5"
+                  aria-expanded="true"
+                >
+                  Compromiso Ambiental
+                </button>
+              </h2>
+              <div id="collapse5" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                  Cada vehículo de JAXTEC reduce significativamente las
+                  emisiones de CO₂, contribuyendo a un entorno más saludable y
+                  limpio.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse6"
+                  aria-expanded="true"
+                >
+                  Datos e Innovación Continua
+                </button>
+              </h2>
+              <div id="collapse6" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                  A través del análisis de datos en tiempo real, nuestros
+                  productos evolucionan constantemente para adaptarse a las
+                  necesidades cambiantes del usuario y el entorno.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer institucional -->
+    <footer class="footer">
+      <div class="container px-3">
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6 col-12 mb-3">
+            <h5 class="text-warning mb-3">Sobre JAXTEC</h5>
+            <p class="text-white-50">
+              Fabricamos autos eléctricos con visión sustentable, tecnología
+              inteligente y compromiso con el medio ambiente.
+            </p>
+          </div>
+          <div class="col-lg-4 col-md-6 col-12 mb-3">
+            <h5 class="text-warning mb-3">Contáctanos</h5>
+            <p class="text-white-50 mb-1">info@jaxtec.com</p>
+            <p class="text-white-50">+52 55 1234 5678</p>
+          </div>
+          <div class="col-lg-4 col-md-12 col-12 mb-3">
+            <h5 class="text-warning mb-3">Ubicación</h5>
+            <p class="text-white-50 mb-1">Av. Innovación 456</p>
+            <p class="text-white-50">Ciudad Tecnológica, México</p>
+          </div>
+        </div>
+        <hr class="border-secondary my-4" />
+        <div class="row">
+          <div class="col-12 text-center">
+            <p class="mb-0 text-white-50 small">
+              &copy; 2025 JAXTEC. Todos los derechos reservados. | Innovación en
+              movilidad eléctrica.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Buscador de palabras clave en la página -->
+    <script src="../JS/Baterias.js"></script>
+  </body>
+</html>
