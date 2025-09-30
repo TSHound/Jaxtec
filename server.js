@@ -97,12 +97,32 @@ app.post(
                 .status(500)
                 .json({ ok: false, error: "Error al generar token" });
             }
-            res.status(200).json({
-              ok: true,
-              mensaje: "Autenticado",
-              id_usuario: user.id_usuario,
-              token: token,
-            });
+            // Guardar sesión en la BD
+            const creado_en = new Date();
+            const expira_en = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 horas
+            const insertSesion = `
+              INSERT INTO 
+              sesiónusuario (id_usuario, token_sesión, creado_en, expira_en)
+              VALUES (?, ?, ?, ?) 
+            `;
+            db.query(
+              insertSesion,
+              [user.id_usuario, token, creado_en, expira_en],
+              (sesionErr, sesionResult) => {
+                if (sesionErr) {
+                  console.error("❌ Error al guardar sesión:", sesionErr.message);
+                  // Puedes responder con error o continuar según tu lógica
+                  return res.status(500).json({ ok: false, error: "Error al guardar sesión" });
+                }
+                // Responder al frontend con el token y datos de usuario
+                res.status(200).json({
+                  ok: true,
+                  mensaje: "Autenticado",
+                  id_usuario: user.id_usuario,
+                  token: token,
+                });
+              }
+            );
           }
         );
       });
@@ -132,6 +152,19 @@ function verifyToken(req, res, next) {
       next();
     }
   );
+}
+
+// Middleware para verificar JWT
+function verificarToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) return res.status(401).json({ mensaje: "No se envió token" });
+  const token = authHeader.split(" ")[1];
+  if (!token) return res.status(401).json({ mensaje: "Token inválido" });
+  jwt.verify(token, process.env.JWT_SECRET || "clave_secreta", (err, decoded) => {
+    if (err) return res.status(403).json({ mensaje: "Token inválido" });
+    req.usuario = decoded;
+    next();
+  });
 }
 
 // ===== Ruta: Registro de un nuevo usuario =====
@@ -262,6 +295,68 @@ body("teléfono_usuario").isNumeric().withMessage("Teléfono inválido"),
     }
   }
 );
+// ===== Ruta: Perfil del usuario logueado =====
+app.get("/api/perfil", verifyToken, (req, res) => {
+  const userId = req.user.id_usuario; // viene del token
+  const query = `
+    SELECT id_usuario, nombre_usuario, teléfono_usuario, correo_usuario, dirección_usuario, rol_usuario
+    FROM usuario 
+    WHERE id_usuario = ?`;
+  
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error("❌ Error al obtener perfil:", err.message);
+      return res.status(500).json({ ok: false, mensaje: "Error interno" });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ ok: false, mensaje: "Usuario no encontrado" });
+    }
+    res.json({ ok: true, usuario: results[0] });
+  });
+});
+// Endpoint para obtener datos del usuario autenticado
+app.get('/api/perfil_usuario', verificarToken, (req, res) => {
+  const id_usuario = req.usuario.id_usuario;
+  db.query(
+    'SELECT id_usuario, nombre_usuario, correo_usuario, teléfono_usuario, dirección_usuario, rol_usuario FROM usuario WHERE id_usuario = ?',
+    [id_usuario],
+    (err, results) => {
+      if (err) return res.status(500).json({ mensaje: 'Error al obtener usuario' });
+      if (!results.length) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+      res.json(results[0]);
+    }
+  );
+});
+// ===== Ruta protegida: Registrar una nueva orden =====
+app.post("/api/orden", verifyToken, (req, res) => {
+  const userId = req.user.id_usuario; // del token
+  const { items, total } = req.body;
+
+  // Insertar orden principal
+  const insertOrder = "INSERT INTO orden (id_usuario, total) VALUES (?, ?)";
+  db.query(insertOrder, [userId, total], (err, result) => {
+    if (err) {
+      console.error("❌ Error al registrar orden:", err.message);
+      return res.status(500).json({ mensaje: "Error al registrar orden" });
+    }
+
+    const orderId = result.insertId;
+    // Insertar items de la orden
+    items.forEach((item) => {
+      const insertItem =
+        "INSERT INTO orden_items (id_orden, id_producto, nombre, precio, cantidad) VALUES (?, ?, ?, ?, ?)";
+      db.query(insertItem, [
+        orderId,
+        item.id,
+        item.nombre,
+        item.precio,
+        item.cantidad,
+      ]);
+    });
+
+    res.json({ ok: true, mensaje: "Orden registrada", id_orden: orderId });
+  });
+});
 // Ruta para el registro de una cotización.
 app.post("/api/registrar_cotizacion", (req, res) => {
   console.log("Datos recibidos en backend:", req.body);
@@ -354,30 +449,30 @@ app.delete("/api/cotizacion/:id_cotización", (req, res) => {
 // Registrar un nuevo artículo
 app.post("/api/articulo", (req, res) => {
   const {
-    nombre_articulo,
-    cantidad_articulo,
-    precio_articulo,
-    costo_articulo,
+    nombre_artículo,
+    cantidad_artículo,
+    precio_artículo,
+    costo_artículo,
     Proveedor_id_proveedor,
   } = req.body;
   if (
-    !nombre_articulo ||
-    cantidad_articulo == null ||
-    precio_articulo == null ||
-    costo_articulo == null ||
+    !nombre_artículo ||
+    cantidad_artículo == null ||
+    precio_artículo == null ||
+    costo_artículo == null ||
     !Proveedor_id_proveedor
   ) {
     return res.status(400).json({ mensaje: "Faltan datos obligatorios" });
   }
-  const query = `INSERT INTO Artículo (nombre_artículo, cantidad_artículo, precio_artículo, costo_artículo, Proveedor_id_proveedor)
+  const query = `INSERT INTO artículo (nombre_artículo, cantidad_artículo, precio_artículo, costo_artículo, Proveedor_id_proveedor)
                  VALUES (?, ?, ?, ?, ?)`;
   db.query(
     query,
     [
-      nombre_articulo,
-      cantidad_articulo,
-      precio_articulo,
-      costo_articulo,
+      nombre_artículo,
+      cantidad_artículo,
+      precio_artículo,
+      costo_artículo,
       Proveedor_id_proveedor,
     ],
     (err, result) => {
@@ -392,10 +487,10 @@ app.post("/api/articulo", (req, res) => {
 
 // Eliminar un artículo por ID
 app.delete("/api/articulo/:id_articulo", (req, res) => {
-  const { id_articulo } = req.params;
+  const { id_artículo } = req.params;
   db.query(
     "DELETE FROM Artículo WHERE id_artículo = ?",
-    [id_articulo],
+    [id_artículo],
     (err, result) => {
       if (err) {
         console.error("Error al eliminar artículo:", err.message);
@@ -410,32 +505,32 @@ app.delete("/api/articulo/:id_articulo", (req, res) => {
 });
 
 app.put("/api/articulo/:id_articulo", (req, res) => {
-  const { id_articulo } = req.params;
+  const { id_artículo } = req.params;
   const {
-    nombre_articulo,
-    cantidad_articulo,
-    precio_articulo,
-    costo_articulo,
+    nombre_artículo,
+    cantidad_artículo,
+    precio_artículo,
+    costo_artículo,
     Proveedor_id_proveedor,
   } = req.body;
   // Solo actualiza los campos que se envían
   const fields = [];
   const values = [];
-  if (nombre_articulo !== undefined) {
+  if (nombre_artículo !== undefined) {
     fields.push("nombre_artículo = ?");
-    values.push(nombre_articulo);
+    values.push(nombre_artículo);
   }
-  if (cantidad_articulo !== undefined) {
+  if (cantidad_artículo !== undefined) {
     fields.push("cantidad_artículo = ?");
-    values.push(cantidad_articulo);
+    values.push(cantidad_artículo);
   }
-  if (precio_articulo !== undefined) {
+  if (precio_artículo !== undefined) {
     fields.push("precio_artículo = ?");
-    values.push(precio_articulo);
+    values.push(precio_artículo);
   }
-  if (costo_articulo !== undefined) {
+  if (costo_artículo !== undefined) {
     fields.push("costo_artículo = ?");
-    values.push(costo_articulo);
+    values.push(costo_artículo);
   }
   if (Proveedor_id_proveedor !== undefined) {
     fields.push("Proveedor_id_proveedor = ?");
@@ -446,7 +541,7 @@ app.put("/api/articulo/:id_articulo", (req, res) => {
       .status(400)
       .json({ mensaje: "No se enviaron campos para actualizar" });
   }
-  values.push(id_articulo);
+  values.push(id_artículo);
   const query = `UPDATE Artículo SET ${fields.join(
     ", "
   )} WHERE id_artículo = ?`;
@@ -469,9 +564,9 @@ app.get("/", (req, res) => {
 
 // Obtener todos los artículos (stock)
 app.get("/api/articulo", (req, res) => {
-  db.query("SELECT * FROM Artículo", (err, results) => {
+  db.query("SELECT * FROM artículo", (err, results) => {
     if (err) {
-      console.error("Error al obtener artículos:", err.message);
+      console.error("❌ Error al obtener artículos:", err.message);
       return res.status(500).json({ mensaje: "Error al obtener artículos" });
     }
     res.json(results);
@@ -620,4 +715,165 @@ app.get("/cancel.html", (req, res) => res.send("<h1>Pago cancelado ❌</h1>"));
 // Iniciar el servidor en el puerto 3000.
 app.listen(3000, () => {
   console.log("🚀 Servidor corriendo en http://localhost:3000");
+});
+
+// Endpoint para agregar producto al carrito del usuario autenticado (modelo: un solo carrito activo)
+app.post('/api/carrito', verificarToken, (req, res) => {
+  const id_usuario = req.usuario.id_usuario;
+  const { id_articulo, cantidad = 1 } = req.body;
+  if (!id_articulo) {
+    console.error('❌ Falta id_articulo en el body');
+    return res.status(400).json({ mensaje: 'Falta id_articulo' });
+  }
+  console.log('🛒 Usuario:', id_usuario, 'Artículo:', id_articulo, 'Cantidad:', cantidad);
+
+  // 1. Buscar carrito activo del usuario
+  db.query(
+    'SELECT id_carrito FROM carrito WHERE Usuario_id_usuario = ? ORDER BY fecha_carrito DESC LIMIT 1',
+    [id_usuario],
+    (err, results) => {
+      if (err) {
+        console.error('❌ Error al buscar carrito:', err.message);
+        return res.status(500).json({ mensaje: 'Error al buscar carrito', error: err.message });
+      }
+      let id_carrito;
+      if (results.length) {
+        id_carrito = results[0].id_carrito;
+        insertarDetalle();
+      } else {
+        // 2. Si no existe, crear uno nuevo
+        db.query(
+          'INSERT INTO carrito (fecha_carrito, Usuario_id_usuario) VALUES (NOW(), ?)',
+          [id_usuario],
+          function (err2, result2) {
+            if (err2) {
+              console.error('❌ Error al crear carrito:', err2.message);
+              return res.status(500).json({ mensaje: 'Error al crear carrito', error: err2.message });
+            }
+            id_carrito = result2.insertId;
+            insertarDetalle();
+          }
+        );
+      }
+
+      function insertarDetalle() {
+        db.query(
+          'SELECT cantidad_carrito FROM carritodetalle WHERE Carrito_id_carrito = ? AND Artículo_id_artículo = ?',
+          [id_carrito, id_articulo],
+          (err3, detalle) => {
+            if (err3) {
+              console.error('❌ Error al buscar detalle:', err3.message);
+              return res.status(500).json({ mensaje: 'Error al buscar detalle', error: err3.message });
+            }
+            if (detalle.length) {
+              // Si ya existe, sumar cantidad
+              db.query(
+                'UPDATE carritodetalle SET cantidad_carrito = cantidad_carrito + ? WHERE Carrito_id_carrito = ? AND Artículo_id_artículo = ?',
+                [cantidad, id_carrito, id_articulo],
+                (err4) => {
+                  if (err4) {
+                    console.error('❌ Error al actualizar cantidad:', err4.message);
+                    return res.status(500).json({ mensaje: 'Error al actualizar cantidad', error: err4.message });
+                  }
+                  res.json({ mensaje: 'Cantidad actualizada en el carrito' });
+                }
+              );
+            } else {
+              // Si no existe, insertar nuevo detalle
+              db.query(
+                'INSERT INTO carritodetalle (Carrito_id_carrito, Artículo_id_artículo, cantidad_carrito) VALUES (?, ?, ?)',
+                [id_carrito, id_articulo, cantidad],
+                (err5) => {
+                  if (err5) {
+                    console.error('❌ Error al agregar al carrito:', err5.message);
+                    return res.status(500).json({ mensaje: 'Error al agregar al carrito', error: err5.message });
+                  }
+                  res.json({ mensaje: 'Producto agregado al carrito' });
+                }
+              );
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
+// Obtener el carrito actual del usuario con sus productos
+app.get('/api/carrito/actual', verificarToken, async (req, res) => {
+  const id_usuario = req.usuario.id_usuario;
+  console.log('📦 Obteniendo carrito para usuario:', id_usuario);
+  
+  try {
+    // Primero obtener el carrito más reciente del usuario
+    const [carritos] = await db.promise().query(
+      'SELECT id_carrito FROM carrito WHERE Usuario_id_usuario = ? ORDER BY fecha_carrito DESC LIMIT 1',
+      [id_usuario]
+    );
+
+    if (!carritos.length) {
+      console.log('No se encontró carrito para el usuario');
+      return res.json([]); // Retornar array vacío si no hay carrito
+    }
+
+    const id_carrito = carritos[0].id_carrito;
+    console.log('ID del carrito encontrado:', id_carrito);
+
+    // Obtener los productos del carrito
+    const query = `
+      SELECT 
+        cd.Carrito_id_carrito,
+        cd.Artículo_id_artículo,
+        cd.cantidad_carrito,
+        a.nombre_artículo,
+        a.precio_artículo,
+        c.fecha_carrito
+      FROM carritodetalle cd
+      JOIN carrito c ON c.id_carrito = cd.Carrito_id_carrito
+      JOIN artículo a ON a.id_artículo = cd.Artículo_id_artículo
+      WHERE cd.Carrito_id_carrito = ?`;
+
+    const [productos] = await db.promise().query(query, [id_carrito]);
+    console.log('Productos encontrados:', productos.length);
+    res.json(productos);
+
+  } catch (error) {
+    console.error('❌ Error al obtener productos del carrito:', error);
+    return res.status(500).json({ 
+      mensaje: 'Error al obtener productos del carrito',
+      error: error.message 
+    });
+  }
+});
+
+
+// Endpoint para obtener los productos del carrito del usuario autenticado
+app.get("/api/carritodetalle/usuario", verificarToken, (req, res) => {
+  const id_usuario = req.usuario.id_usuario;
+  // Buscar el carrito activo del usuario
+  db.query(
+    "SELECT id_carrito FROM carrito WHERE Usuario_id_usuario = ? ORDER BY fecha_carrito DESC LIMIT 1",
+    [id_usuario],
+    (err, result) => {
+      if (err) return res.status(500).json({ mensaje: "Error al buscar carrito" });
+      if (result.length === 0) return res.json([]); // No hay carrito
+      const id_carrito = result[0].id_carrito;
+      // Buscar los productos del carrito
+      db.query(
+        `SELECT 
+          cd.Artículo_id_artículo AS id_articulo,
+          a.nombre_artículo AS nombre_artículo,
+          a.precio_artículo AS precio_artículo,
+          cd.cantidad_carrito
+        FROM carritodetalle cd
+        JOIN artículo a ON cd.Artículo_id_artículo = a.id_artículo
+        WHERE cd.Carrito_id_carrito = ?`,
+        [id_carrito],
+        (err2, productos) => {
+          if (err2) return res.status(500).json({ mensaje: "Error al obtener productos del carrito" });
+          res.json(productos);
+        }
+      );
+    }
+  );
 });

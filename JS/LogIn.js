@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         setTimeout(() => {
-          window.location.href = "../HTML/Formulario.html";
+          window.location.href = "../HTML/Tienda.html";
         }, 3000);
       } else {
         showMessage(

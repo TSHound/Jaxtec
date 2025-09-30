@@ -135,68 +135,25 @@
     </nav>
 
     <div class="container">
-      <h1>Tu carrito de compras</h1>
+
+  <h1>Tu carrito de compras</h1>
+  <div id="infoUsuarioCarrito" class="mb-4"></div>
 
       <div
         id="cartItems"
         aria-live="polite"
         aria-label="Lista de productos en el carrito"
       >
-        <!-- Ejemplo de producto en carrito -->
-        <article class="cart-item" data-id="1" data-price="75.00" tabindex="0">
-          <img src="https://via.placeholder.com/150" alt="Brake Disc" />
-          <div class="cart-item-details">
-            <h5>Brake Disc</h5>
-            <p>Precio unitario: $75.00</p>
-          </div>
-          <div class="cart-item-actions">
-            <label for="qty-1" class="visually-hidden"
-              >Cantidad de Brake Disc</label
-            >
-            <input
-              id="qty-1"
-              type="number"
-              min="1"
-              value="1"
-              aria-describedby="desc-qty-1"
-            />
-            <button class="remove-btn" aria-label="Eliminar Brake Disc">
-              &times;
-            </button>
-          </div>
-        </article>
-
-        <article class="cart-item" data-id="2" data-price="8.00" tabindex="0">
-          <img src="https://via.placeholder.com/150" alt="Spark Plug" />
-          <div class="cart-item-details">
-            <h5>Spark Plug</h5>
-            <p>Precio unitario: $8.00</p>
-          </div>
-          <div class="cart-item-actions">
-            <label for="qty-2" class="visually-hidden"
-              >Cantidad de Spark Plug</label
-            >
-            <input
-              id="qty-2"
-              type="number"
-              min="1"
-              value="2"
-              aria-describedby="desc-qty-2"
-            />
-            <button class="remove-btn" aria-label="Eliminar Spark Plug">
-              &times;
-            </button>
-          </div>
-        </article>
+        <!-- Los productos del carrito se cargarán dinámicamente aquí -->
       </div>
 
       <section class="cart-summary" aria-label="Resumen de compra">
         <h4>Resumen de compra</h4>
-        <p id="subtotal">Subtotal: $91.00</p>
-        <p id="shipping">Envío: $10.00</p>
+        <p id="subtotal">Subtotal: $0.00</p>
+        <p id="shipping">Envío: $0.00</p>
         <hr />
         <p id="total" style="font-weight: 700; font-size: 1.4rem">
-          Total: $101.00
+          Total: $0.00
         </p>
         <button
           class="checkout-btn"

@@ -72,3 +72,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// --- Cargar artículos desde la API y renderizar tabla ---
+async function cargarArticulosStock() {
+  const tbody = document.querySelector('#inventoryTable tbody');
+  try {
+    const res = await fetch('http://localhost:3000/api/articulo');
+    const articulos = await res.json();
+    tbody.innerHTML = '';
+    articulos.forEach(art => {
+      const estado = art.cantidad_artículo > 0 ? 'En Stock' : 'Agotado';
+      const statusClass = art.cantidad_artículo > 0 ? 'status-in' : 'status-out';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${art.nombre_artículo}</td>
+        <td>$${art.precio_artículo}</td>
+        <td>${art.cantidad_artículo}</td>
+        <td class="${statusClass}">${estado}</td>
+        <td>
+          <button class="edit-btn">Editar</button>
+          <button class="delete-btn">Eliminar</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="5">Error al cargar artículos</td></tr>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', cargarArticulosStock);
