@@ -328,33 +328,42 @@ app.get('/api/perfil_usuario', verificarToken, (req, res) => {
   );
 });
 // ===== Ruta protegida: Registrar una nueva orden =====
-app.post("/api/orden", verifyToken, (req, res) => {
-  const userId = req.user.id_usuario; // del token
+app.post("/api/orden", verificarToken, (req, res) => {
+  const userId = req.usuario.id_usuario; // del token
   const { items, total } = req.body;
 
-  // Insertar orden principal
-  const insertOrder = "INSERT INTO orden (id_usuario, total) VALUES (?, ?)";
-  db.query(insertOrder, [userId, total], (err, result) => {
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ mensaje: "Carrito vacío o datos inválidos" });
+  }
+
+  // Insertar pedido principal
+  const insertPedido = "INSERT INTO pedido (Usuario_id_usuario, fecha_pedido, estado_pedido, precio_total) VALUES (?, NOW(), 'Pendiente', ?)";
+  db.query(insertPedido, [userId, total], (err, result) => {
     if (err) {
-      console.error("❌ Error al registrar orden:", err.message);
-      return res.status(500).json({ mensaje: "Error al registrar orden" });
+      console.error("❌ Error al registrar pedido:", err.message);
+      return res.status(500).json({ mensaje: "Error al registrar pedido", error: err.message });
     }
 
-    const orderId = result.insertId;
-    // Insertar items de la orden
-    items.forEach((item) => {
-      const insertItem =
-        "INSERT INTO orden_items (id_orden, id_producto, nombre, precio, cantidad) VALUES (?, ?, ?, ?, ?)";
-      db.query(insertItem, [
-        orderId,
-        item.id,
-        item.nombre,
-        item.precio,
-        item.cantidad,
-      ]);
+    const pedidoId = result.insertId;
+    
+    // Preparar detalles para inserción múltiple
+    const detalles = items.map(item => [
+      pedidoId,           // Pedido_id_pedido
+      item.id,            // Artículo_id_artículo
+      item.cantidad,      // cantidad_pedido
+      item.precio         // precio_unitario
+    ]);
+    
+    // Insertar detalles en batch
+    const insertDetalles = "INSERT INTO pedidodetalle (Pedido_id_pedido, Artículo_id_artículo, cantidad_pedido, precio_unitario) VALUES ?";
+    db.query(insertDetalles, [detalles], (err2) => {
+      if (err2) {
+        console.error("❌ Error al registrar detalles del pedido:", err2.message);
+        return res.status(500).json({ mensaje: "Error al registrar detalles del pedido", error: err2.message });
+      }
+      
+      res.json({ ok: true, mensaje: "Pedido registrado con éxito", id_pedido: pedidoId });
     });
-
-    res.json({ ok: true, mensaje: "Orden registrada", id_orden: orderId });
   });
 });
 // Ruta para el registro de una cotización.
@@ -846,6 +855,87 @@ app.get('/api/carrito/actual', verificarToken, async (req, res) => {
   }
 });
 
+
+// Actualizar cantidad de un producto en el carrito
+app.put('/api/carrito/:id_articulo', verificarToken, (req, res) => {
+  const id_usuario = req.usuario.id_usuario;
+  const id_articulo = req.params.id_articulo;
+  const { cantidad } = req.body;
+  
+  if (!cantidad || isNaN(parseInt(cantidad)) || parseInt(cantidad) < 1) {
+    return res.status(400).json({ mensaje: 'Cantidad inválida' });
+  }
+  
+  // Primero obtener el carrito activo
+  db.query('SELECT id_carrito FROM carrito WHERE Usuario_id_usuario = ? ORDER BY fecha_carrito DESC LIMIT 1', [id_usuario], (err, results) => {
+    if (err) return res.status(500).json({ mensaje: 'Error al buscar carrito' });
+    if (!results.length) return res.status(404).json({ mensaje: 'Carrito no encontrado' });
+    
+    const id_carrito = results[0].id_carrito;
+    
+    // Actualizar la cantidad del producto
+    db.query(
+      'UPDATE carritodetalle SET cantidad_carrito = ? WHERE Carrito_id_carrito = ? AND Artículo_id_artículo = ?',
+      [parseInt(cantidad), id_carrito, id_articulo],
+      (err2, result) => {
+        if (err2) {
+          console.error('❌ Error al actualizar cantidad:', err2);
+          return res.status(500).json({ mensaje: 'Error al actualizar cantidad' });
+        }
+        
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ mensaje: 'Producto no encontrado en el carrito' });
+        }
+        
+        res.json({ mensaje: 'Cantidad actualizada correctamente' });
+      }
+    );
+  });
+});
+
+// Endpoint para eliminar un producto del carrito
+app.delete('/api/carrito/:id_articulo', verificarToken, async (req, res) => {
+  const id_usuario = req.usuario.id_usuario;
+  const id_articulo = req.params.id_articulo;
+  
+  console.log('🗑️ Eliminando artículo:', id_articulo, 'del carrito del usuario:', id_usuario);
+
+  try {
+    // 1. Obtener el carrito activo del usuario
+    const [carritos] = await db.promise().query(
+      'SELECT id_carrito FROM carrito WHERE Usuario_id_usuario = ? ORDER BY fecha_carrito DESC LIMIT 1',
+      [id_usuario]
+    );
+
+    if (!carritos.length) {
+      console.log('No se encontró carrito para el usuario');
+      return res.status(404).json({ mensaje: 'Carrito no encontrado' });
+    }
+
+    const id_carrito = carritos[0].id_carrito;
+    console.log('Carrito encontrado:', id_carrito);
+
+    // 2. Eliminar el producto del carrito
+    const [result] = await db.promise().query(
+      'DELETE FROM carritodetalle WHERE Carrito_id_carrito = ? AND Artículo_id_artículo = ?',
+      [id_carrito, id_articulo]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado en el carrito' });
+    }
+
+    console.log('Producto eliminado exitosamente');
+    res.json({ mensaje: 'Producto eliminado del carrito' });
+
+  } catch (error) {
+    console.error('❌ Error al eliminar producto del carrito:', error);
+    res.status(500).json({ 
+      mensaje: 'Error al eliminar el producto',
+      error: error.message 
+    });
+  }
+});
 
 // Endpoint para obtener los productos del carrito del usuario autenticado
 app.get("/api/carritodetalle/usuario", verificarToken, (req, res) => {
