@@ -9,6 +9,17 @@ body {
   text-align: center;
 }
 
+/* Estilos para el mensaje de bienvenida del usuario */
+.bienvenido-usuario {
+  margin-right: 15px;
+  padding: 8px;
+}
+
+.bienvenido-texto {
+  font-weight: bold;
+  color: #ffc107;
+}
+
 .background-container {
   position: fixed;
   top: 0;

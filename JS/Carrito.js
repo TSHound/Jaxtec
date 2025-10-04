@@ -1,3 +1,49 @@
+document.addEventListener("DOMContentLoaded", function () {
+  // Obtener token JWT una sola vez para toda la página
+  const token = sessionStorage.getItem("jwt_token");
+  const isLoggedIn = !!token;
+
+  // --- Mostrar el nombre del usuario en la barra de navegación ---
+  async function mostrarNombreUsuario() {
+    // Si no está logueado, no hacemos nada
+    if (!isLoggedIn) return;
+
+    try {
+      const res = await fetch("http://localhost:3000/api/perfil_usuario", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (res.ok) {
+        const userData = await res.json();
+        const navbar = document.querySelector(".navbar-collapse");
+        
+        if (navbar) {
+          // Crear el elemento para el mensaje de bienvenida
+          const userDiv = document.createElement("div");
+          userDiv.className = "ms-auto bienvenido-usuario";
+          
+          // Crear el texto con formato (usando las clases CSS)
+          const welcomeText = document.createElement("span");
+          welcomeText.className = "bienvenido-texto"; // Usa la clase definida en Baterias.css
+          welcomeText.textContent = `Bienvenido, ${userData.nombre_usuario || 'usuario'}`;
+          
+          // Añadir el texto al div
+          userDiv.appendChild(welcomeText);
+          
+          // Añadir el div a la navbar
+          navbar.appendChild(userDiv);
+        }
+      }
+    } catch (e) {
+      console.warn("Error al obtener información del usuario:", e);
+    }
+  }
+  mostrarNombreUsuario();
+  
+  // Iniciar carga de productos del carrito
+  cargarProductosCarrito();
+});
+
 // Función para cargar los productos del carrito del usuario
 async function cargarProductosCarrito() {
   const token = sessionStorage.getItem("jwt_token");
@@ -95,21 +141,59 @@ function setupEventListeners() {
   // Eventos para inputs de cantidad
   document.querySelectorAll('.cart-item input[type="number"]').forEach(input => {
     input.addEventListener("change", async (e) => {
-      if (e.target.value < 1) e.target.value = 1;
+      // Guardar el valor original antes de cualquier operación
+      const valorOriginal = e.target.defaultValue;
+      
+      // Si el valor es vacío o no es un número, revertir y salir
+      if (e.target.value === "" || isNaN(parseInt(e.target.value))) {
+        e.target.value = valorOriginal || 1;
+        alert('Por favor ingresa una cantidad válida');
+        return;
+      }
+      
+      // Permitir el valor 0 para eliminar productos
+      // Valores negativos se tratan como 0 (eliminar)
+      let cantidad = parseInt(e.target.value);
+      if (cantidad < 0) {
+        cantidad = 0;
+        e.target.value = 0;
+      }
       
       const cartItem = e.target.closest('.cart-item');
       const productoId = cartItem.getAttribute('data-id');
-      const nuevaCantidad = parseInt(e.target.value);
+      const nuevaCantidad = cantidad; // Usar la variable cantidad que ya está parseada
       
       try {
-        await actualizarCantidadCarrito(productoId, nuevaCantidad);
+        // Actualizar el defaultValue para que si hay error podamos revertir al nuevo valor
+        e.target.defaultValue = nuevaCantidad;
+        
+        // Si la cantidad es 0, eliminar el producto visualmente y de la base de datos
+        if (nuevaCantidad === 0) {
+          const cartItem = e.target.closest('.cart-item');
+          if (cartItem) {
+            // Eliminar visualmente
+            cartItem.remove();
+            updateCartSummary();
+            // Llamar a la API para eliminar en la base de datos
+            await eliminarDelCarrito(productoId);
+            alert("Producto eliminado del carrito");
+            return;
+          }
+        }
+        
+        const resultado = await actualizarCantidadCarrito(productoId, nuevaCantidad);
         updateCartSummary();
-        alert("Cantidad actualizada exitosamente");
+        
+        // Solo mostrar alerta si la cantidad fue actualizada
+        if (nuevaCantidad > 0) {
+          alert("Cantidad actualizada exitosamente");
+        }
       } catch (error) {
         console.error('Error al actualizar cantidad:', error);
-        alert('No se pudo actualizar la cantidad. Por favor, intente nuevamente.');
+        // No mostrar alerta aquí ya que actualizarCantidadCarrito ya lo hace
+        
         // Revertir al valor anterior si hay error
-        e.target.value = e.target.defaultValue;
+        e.target.value = valorOriginal || 1;
         updateCartSummary();
       }
     });
@@ -119,7 +203,6 @@ function setupEventListeners() {
   document.querySelectorAll(".cart-item .remove-btn").forEach(btn => {
     btn.addEventListener("click", async (e) => {
       try {
-        const cartItem = e.target.closest('.cart-item');
         const productoId = btn.getAttribute('data-product-id');
         console.log('Botón eliminar clickeado, ID del producto:', productoId);
         
@@ -128,26 +211,12 @@ function setupEventListeners() {
           throw new Error('ID de producto no encontrado');
         }
         
-        const result = await eliminarDelCarrito(productoId);
+        // La función eliminarDelCarrito ya se encarga de eliminar el elemento del DOM
+        // y de actualizar el resumen del carrito
+        await eliminarDelCarrito(productoId);
         
-        if (result.eliminadoCompletamente) {
-          // Si el producto fue eliminado completamente, remover el elemento del DOM
-          console.log('Producto eliminado completamente, removiendo del DOM');
-          cartItem.remove();
-          // Mostrar mensaje de éxito
-          alert("Producto eliminado del carrito");
-        } else {
-          // Si solo se redujo la cantidad, actualizar el display
-          console.log('Cantidad reducida a:', result.nuevaCantidad);
-          const cantidadInput = cartItem.querySelector('input[type="number"]');
-          if (cantidadInput) {
-            cantidadInput.value = result.nuevaCantidad;
-          }
-          // Mostrar mensaje de éxito
-          alert("Se eliminó una unidad del producto");
-        }
-        
-        updateCartSummary();
+        // Mostrar mensaje de éxito
+        alert("Producto eliminado del carrito");
       } catch (error) {
         console.error('Error al procesar el carrito:', error);
         alert('No se pudo procesar la operación. Por favor, intente nuevamente.');
@@ -160,6 +229,34 @@ function setupEventListeners() {
 async function actualizarCantidadCarrito(productoId, cantidad) {
   const token = sessionStorage.getItem("jwt_token");
   
+  // Validar la cantidad antes de enviar
+  const cantidadNum = parseInt(cantidad);
+  
+  // Si la cantidad no es un número válido o es menor a 1
+  if (isNaN(cantidadNum) || cantidadNum < 1) {
+    console.error('Cantidad inválida:', cantidad);
+    
+    // Si es 0 o menor, eliminar el producto
+    if (cantidadNum === 0) {
+      console.log('Cantidad es 0, eliminando producto del carrito');
+      // Eliminar visualmente antes de llamar a la API
+      const cartItem = document.querySelector(`article[data-id="${productoId}"]`);
+      if (cartItem) {
+        cartItem.remove();
+        updateCartSummary();
+      }
+      return eliminarDelCarrito(productoId);
+    }
+    
+    // Si no es un número, restaurar el valor anterior y mostrar error
+    const inputElement = document.querySelector(`article[data-id="${productoId}"] input[type="number"]`);
+    if (inputElement) {
+      inputElement.value = 1; // Valor por defecto
+    }
+    alert("Por favor ingresa una cantidad válida");
+    return;
+  }
+  
   try {
     const response = await fetch(`http://localhost:3000/api/carrito/${productoId}`, {
       method: "PUT",
@@ -168,7 +265,7 @@ async function actualizarCantidadCarrito(productoId, cantidad) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        cantidad: cantidad
+        cantidad: cantidadNum
       })
     });
 
@@ -178,9 +275,20 @@ async function actualizarCantidadCarrito(productoId, cantidad) {
       console.error('Error actualización:', errorData);
       throw new Error("Error al actualizar la cantidad");
     }
+    
+    const data = await response.json();
+    console.log("Actualización exitosa:", data.mensaje);
+    return data;
   } catch (error) {
     console.error("Error al actualizar la cantidad:", error);
     alert("Error al actualizar la cantidad del producto");
+    
+    // Restaurar valor anterior en caso de error
+    const inputElement = document.querySelector(`article[data-id="${productoId}"] input[type="number"]`);
+    if (inputElement) {
+      inputElement.value = inputElement.defaultValue || 1; // Restaurar al valor anterior o usar 1 como fallback
+    }
+    throw error;
   }
 }
 
@@ -195,6 +303,23 @@ async function eliminarDelCarrito(productoId) {
   if (!token) {
     console.error('No hay token de autenticación');
     throw new Error('No hay token de autenticación');
+  }
+  
+  // Eliminar visualmente el producto antes de la petición
+  // Primero con data-id
+  let productoElement = document.querySelector(`article[data-id="${productoId}"]`);
+  // Si no lo encuentra, intentar con el botón eliminar que contiene data-product-id
+  if (!productoElement) {
+    const btnEliminar = document.querySelector(`.remove-btn[data-product-id="${productoId}"]`);
+    if (btnEliminar) {
+      productoElement = btnEliminar.closest('.cart-item');
+    }
+  }
+  
+  if (productoElement) {
+    console.log('Eliminando visualmente el producto:', productoId);
+    productoElement.remove(); // Elimina el elemento del DOM inmediatamente
+    updateCartSummary(); // Actualizar el resumen del carrito
   }
 
   try {
@@ -226,29 +351,17 @@ async function eliminarDelCarrito(productoId) {
   }
 }
 
-let token = sessionStorage.getItem("jwt_token");
-let isLoggedIn = token !== null; // si hay token => está logueado
-
-// Bloquear el acceso al formulario si no está logueado
-document.addEventListener("DOMContentLoaded", function () {
-  let token = sessionStorage.getItem("jwt_token");
-  let isLoggedIn = !!token; // true si existe
-
-  if (isLoggedIn) {
-    cargarProductosCarrito(); // Cargar productos si el usuario está logueado
-  }
-
-  document
-    .querySelectorAll('a.nav-link[href="Formulario.html"], .checkout-btn')
-    .forEach((btn) => {
-      btn.addEventListener("click", function (e) {
-        if (!isLoggedIn) {
-          e.preventDefault();
-          alert("Debes iniciar sesión para acceder al carrito y comprar.");
-        }
-      });
+// Configurar acceso al formulario de cotización (como en otras páginas)
+  const formularioLinks = document.querySelectorAll('a[href="Formulario.html"]');
+  formularioLinks.forEach(link => {
+    link.addEventListener("click", (e) => {
+      if (!isLoggedIn) {
+        e.preventDefault();
+        alert("Atención: Debes iniciar sesión.");
+      }
+      // Si está logueado, se permite ir al formulario normalmente
     });
-});
+  });
 
 // Mostrar información del usuario logueado en el carrito
 document.addEventListener('DOMContentLoaded', async function () {
@@ -315,10 +428,19 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // Evento para botones eliminar
   document.querySelectorAll(".cart-item .remove-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const item = e.target.closest(".cart-item");
-      item.remove();
-      updateCartSummary();
+    btn.addEventListener("click", async (e) => {
+      const productoId = btn.getAttribute('data-product-id');
+      if (productoId) {
+        try {
+          await eliminarDelCarrito(productoId);
+        } catch (error) {
+          console.error('Error al eliminar producto:', error);
+          alert('Error al eliminar el producto');
+        }
+      } else {
+        console.error('ID de producto no encontrado');
+        alert('No se pudo identificar el producto a eliminar');
+      }
     });
   });
 
@@ -362,7 +484,28 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       const result = await response.json();
       if (response.ok) {
+        // Vaciar el carrito en la base de datos
+        try {
+          const vaciarResponse = await fetch("http://localhost:3000/api/carrito/vaciar", {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          
+          if (vaciarResponse.ok) {
+            console.log('Carrito vaciado en la base de datos');
+          } else {
+            console.error('Error al vaciar el carrito en la base de datos');
+          }
+        } catch (vaciarError) {
+          console.error('Error al vaciar el carrito:', vaciarError);
+        }
+        
         alert("Compra registrada con éxito. ¡Gracias!");
+        // Actualizar la vista
+        document.getElementById("cartItems").innerHTML = "<p>No hay productos en el carrito</p>";
+        updateCartSummary();
       } else {
         alert(result.mensaje || "Error al procesar la compra.");
       }
@@ -416,9 +559,27 @@ document.addEventListener("DOMContentLoaded", function() {
         
         const result = await response.json();
         if (response.ok) {
+          // Vaciar el carrito en la base de datos
+          try {
+            const vaciarResponse = await fetch("http://localhost:3000/api/carrito/vaciar", {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+            
+            if (vaciarResponse.ok) {
+              console.log('Carrito vaciado en la base de datos');
+            } else {
+              console.error('Error al vaciar el carrito en la base de datos');
+            }
+          } catch (vaciarError) {
+            console.error('Error al vaciar el carrito:', vaciarError);
+          }
+          
           alert("¡Compra registrada con éxito! Tu pedido está en proceso.");
           // Limpiar el carrito visualmente
-          document.getElementById("cartItems").innerHTML = "<p>Carrito vacío</p>";
+          document.getElementById("cartItems").innerHTML = "<p>No hay productos en el carrito</p>";
           updateCartSummary();
         } else {
           alert(result.mensaje || "Error al procesar la compra.");

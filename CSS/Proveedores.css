@@ -6,6 +6,17 @@ body {
   padding: 0;
 }
 
+/* Estilos para el mensaje de bienvenida del usuario */
+.bienvenido-usuario {
+  margin-right: 15px;
+  padding: 8px;
+}
+
+.bienvenido-texto {
+  font-weight: bold;
+  color: #ffc107;
+}
+
 /* Navbar */
 .navbar {
   background-color: #000;

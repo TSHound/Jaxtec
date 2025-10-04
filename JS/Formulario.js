@@ -1,20 +1,57 @@
 // Formulario.js - Lógica del formulario de pedidos de vehículo para JAXTEC
 document.addEventListener("DOMContentLoaded", function () {
+  // Obtener token JWT una sola vez para toda la página
+  const token = sessionStorage.getItem("jwt_token");
+  const isLoggedIn = !!token;
+
+  // --- Mostrar el nombre del usuario en la barra de navegación ---
+  async function mostrarNombreUsuario() {
+    // Si no está logueado, no hacemos nada
+    if (!isLoggedIn) return;
+
+    try {
+      const res = await fetch("http://localhost:3000/api/perfil_usuario", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (res.ok) {
+        const userData = await res.json();
+        const navbar = document.querySelector(".navbar-collapse");
+        
+        if (navbar) {
+          // Crear el elemento para el mensaje de bienvenida
+          const userDiv = document.createElement("div");
+          userDiv.className = "ms-auto bienvenido-usuario";
+          
+          // Crear el texto con formato (usando las clases CSS)
+          const welcomeText = document.createElement("span");
+          welcomeText.className = "bienvenido-texto"; // Usa la clase definida en Baterias.css
+          welcomeText.textContent = `Bienvenido, ${userData.nombre_usuario || 'usuario'}`;
+          
+          // Añadir el texto al div
+          userDiv.appendChild(welcomeText);
+          
+          // Añadir el div a la navbar
+          navbar.appendChild(userDiv);
+        }
+      }
+    } catch (e) {
+      console.warn("Error al obtener información del usuario:", e);
+    }
+  }
+  mostrarNombreUsuario();
+    
+  // Solo ejecutar el código relacionado con el formulario de pedidos si estamos en la página del formulario
+  const pedidoForm = document.getElementById("pedidoForm");
+  
+  // Si no estamos en la página del formulario, no continuar con esta parte del código
+  if (!pedidoForm) return;
+  
   const usuario = sessionStorage.getItem('usuario') || '';
   const usuarioInput = document.getElementById('usuario_logueado');
   if (usuarioInput) usuarioInput.value = usuario;
 
-  const pedidoForm = document.getElementById("pedidoForm");
   const formMsg = document.getElementById("formMsg");
-
-  // Obtener token guardado en sessionStorage
-  const token = sessionStorage.getItem("jwt_token"); 
-
-  // Bloquear el formulario si no hay token
-  if (!token) {
-    showMessage(formMsg, "Debes iniciar sesión para hacer un pedido.", "red");
-    pedidoForm.querySelector("button[type='submit']").disabled = true;
-  }
 
   pedidoForm.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -76,73 +113,104 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function hideMessages() {
-    formMsg.textContent = "";
-    formMsg.style.display = "none";
+    if (formMsg) {
+      formMsg.textContent = "";
+      formMsg.style.display = "none";
+    }
   }
 
   function showMessage(element, message, color = "red") {
-    element.textContent = message;
-    element.style.color = color;
-    element.style.visibility = "visible";
-    element.style.height = "auto";
-    element.style.display = "block";
+    if (element) {
+      element.textContent = message;
+      element.style.color = color;
+      element.style.visibility = "visible";
+      element.style.height = "auto";
+      element.style.display = "block";
+    } else {
+      console.warn('Elemento no encontrado para mostrar mensaje:', message);
+    }
   }
 
-  document.getElementById("fecha_solicitud").valueAsDate = new Date();
+  const fechaSolicitud = document.getElementById("fecha_solicitud");
+  if (fechaSolicitud) fechaSolicitud.valueAsDate = new Date();
 
-  // --- Pedidos del usuario con token ---
-  document.getElementById('btnEliminarPedidos').addEventListener('click', async function() {
+  // --- Cotizaciones del usuario con token ---
+  const btnEliminarPedidos = document.getElementById('btnEliminarPedidos');
+  if (btnEliminarPedidos) {
+    btnEliminarPedidos.addEventListener('click', async function() {
     const misPedidosDiv = document.getElementById('misPedidos');
     const listaPedidosDiv = document.getElementById('listaPedidos');
     misPedidosDiv.style.display = 'block';
     listaPedidosDiv.innerHTML = 'Cargando...';
 
-    const usuario = sessionStorage.getItem('usuario') || '';
-
     try {
-      const response = await fetch(`http://localhost:3000/api/pedidos?usuario=${encodeURIComponent(usuario)}`, {
-        headers: { "Authorization": `Bearer ${token}` } // <-- Token agregado
+      // Corregido: El endpoint verificarToken ya extrae el id_usuario del token JWT
+      const response = await fetch(`http://localhost:3000/api/cotizacion`, {
+        headers: { "Authorization": `Bearer ${token}` }
       });
-      const pedidos = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+      
+      const cotizaciones = await response.json();
 
-      if (pedidos.length === 0) {
-        listaPedidosDiv.innerHTML = '<em>No tienes pedidos registrados.</em>';
+      if (cotizaciones.length === 0) {
+        listaPedidosDiv.innerHTML = '<em>No tienes cotizaciones registradas.</em>';
         return;
       }
 
-      listaPedidosDiv.innerHTML = pedidos.map(pedido => `
+      listaPedidosDiv.innerHTML = cotizaciones.map(cotizacion => {
+        // Formatear fecha si existe
+        let fechaFormateada = cotizacion.fecha_cotización;
+        if (fechaFormateada) {
+          try {
+            const fecha = new Date(fechaFormateada);
+            fechaFormateada = fecha.toLocaleDateString('es-ES');
+          } catch (e) {
+            console.warn("Error al formatear fecha:", e);
+          }
+        }
+        
+        return `
         <div class="card mb-2">
           <div class="card-body">
-            <strong>Placa:</strong> ${pedido.placa_vehiculo} |
-            <strong>Modelo:</strong> ${pedido.modelo_vehiculo} |
-            <strong>Fecha:</strong> ${pedido.fecha_solicitud}
-            <button class="btn btn-sm btn-danger float-end" onclick="eliminarPedido('${pedido.id_pedido}')">Eliminar</button>
+            <strong>Placa:</strong> ${cotizacion.placa_vehículo || 'N/A'} |
+            <strong>Modelo:</strong> ${cotizacion.modelo_vehículo || 'N/A'} |
+            <strong>Fecha:</strong> ${fechaFormateada || 'N/A'}
+            <button class="btn btn-sm btn-danger float-end" onclick="eliminarPedido('${cotizacion.id_cotización}')">Eliminar</button>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     } catch (err) {
-      listaPedidosDiv.innerHTML = '<span style="color:red;">Error al cargar pedidos.</span>';
-      console.error("[EliminarPedidos] Error al cargar pedidos:", err);
+      listaPedidosDiv.innerHTML = '<span style="color:red;">Error al cargar cotizaciones.</span>';
+      console.error("[MisCotizaciones] Error al cargar cotizaciones:", err);
     }
   });
+  }
 
-  // Función global para eliminar un pedido específico
-  window.eliminarPedido = async function(id_pedido) {
-    if (!confirm('¿Seguro que deseas eliminar este pedido?')) return;
+  // Función global para eliminar una cotización específica
+  window.eliminarPedido = async function(id_cotización) {
+    if (!confirm('¿Seguro que deseas eliminar esta cotización?')) return;
     try {
-      const response = await fetch(`http://localhost:3000/api/pedido/${id_pedido}`, { 
+      const token = sessionStorage.getItem("jwt_token");
+      const response = await fetch(`http://localhost:3000/api/cotizacion/${id_cotización}`, { 
         method: 'DELETE',
-        headers: { "Authorization": `Bearer ${token}` } // <-- Token agregado
+        headers: { "Authorization": `Bearer ${token}` }
       });
       if (response.ok) {
-        alert('Pedido eliminado');
-        document.getElementById('btnEliminarPedidos').click();
+        alert('Cotización eliminada correctamente');
+        // Actualizar la lista de cotizaciones
+        const btnEliminarPedidos = document.getElementById('btnEliminarPedidos');
+        if (btnEliminarPedidos) btnEliminarPedidos.click();
       } else {
-        alert('No se pudo eliminar el pedido');
+        const errorText = await response.text().catch(() => '');
+        alert(`No se pudo eliminar la cotización: ${errorText || response.statusText}`);
       }
     } catch (err) {
-      alert('Error de conexión');
-      console.error("[EliminarPedidos] Error al eliminar pedido:", err);
+      alert('Error de conexión al servidor');
+      console.error("[MisCotizaciones] Error al eliminar cotización:", err);
     }
   };
 

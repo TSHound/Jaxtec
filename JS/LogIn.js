@@ -2,24 +2,64 @@
 // Este archivo gestiona el registro de nuevos usuarios, el inicio de sesión, el manejo de mensajes de error/éxito y la redirección al formulario principal tras el login.
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Obtener token JWT una sola vez para toda la página
+  const token = sessionStorage.getItem("jwt_token");
+  const isLoggedIn = !!token;
+
+  // --- Mostrar el nombre del usuario en la barra de navegación ---
+  async function mostrarNombreUsuario() {
+    // Si no está logueado, no hacemos nada
+    if (!isLoggedIn) return;
+
+    try {
+      const res = await fetch("http://localhost:3000/api/perfil_usuario", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (res.ok) {
+        const userData = await res.json();
+        const navbar = document.querySelector(".navbar-collapse");
+        
+        if (navbar) {
+          // Crear el elemento para el mensaje de bienvenida
+          const userDiv = document.createElement("div");
+          userDiv.className = "ms-auto bienvenido-usuario";
+          
+          // Crear el texto con formato (usando las clases CSS)
+          const welcomeText = document.createElement("span");
+          welcomeText.className = "bienvenido-texto"; // Usa la clase definida en Baterias.css
+          welcomeText.textContent = `Bienvenido, ${userData.nombre_usuario || 'usuario'}`;
+          
+          // Añadir el texto al div
+          userDiv.appendChild(welcomeText);
+          
+          // Añadir el div a la navbar
+          navbar.appendChild(userDiv);
+        }
+      }
+    } catch (e) {
+      console.warn("Error al obtener información del usuario:", e);
+    }
+  }
+  mostrarNombreUsuario();
+  
   // Referencias a los elementos del formulario de login
   const loginForm = document.getElementById("loginForm");
   const usernameField = document.getElementById("username");
   const passwordField = document.getElementById("password");
-  // const usernameError = document.getElementById("usernameError");
-  // const passwordError = document.getElementById("passwordError");+
+  const usernameError = document.getElementById("usernameError");
+  const passwordError = document.getElementById("passwordError");
   const registerButton = document.getElementById("showCreateAccount");
   const registeredMessage = document.getElementById("registeredMessage");
+
 
   // Login de usuario existente
   loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
     hideMessages();
-
     const username = usernameField.value.trim();
     const password = passwordField.value.trim();
     let hasError = false;
-
     if (username === "") {
       showMessage(usernameError, "Por favor, ingresa tu nombre de usuario.");
       hasError = true;
@@ -29,40 +69,25 @@ document.addEventListener("DOMContentLoaded", function () {
       hasError = true;
     }
     if (hasError) return;
-
     try {
       const response = await fetch("http://localhost:3000/api/login_usuario", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre_usuario: username, // 👈 mismo campo que espera el backend
-          contraseña_usuario: password, // 👈 mismo campo que espera el backend
-        }),
+        body: JSON.stringify({ nombre_usuario: username, contraseña_usuario: password }),
       });
-
       const result = await response.json();
-
-      if (response.ok && result.ok) {
-        // Guarda los datos del usuario en sessionStorage/localStorage
-        sessionStorage.setItem("id_usuario", result.id_usuario);
-        sessionStorage.setItem("usuario", username);
-        sessionStorage.setItem("jwt_token", result.token);
-        localStorage.setItem("isLoggedIn", "true");
-
-        showMessage(
-          registeredMessage,
-          result.mensaje || "¡Inicio de sesión exitoso!",
-          "green"
-        );
-
+      if (response.ok) {
+        // Guarda el id_usuario y nombre de usuario en sessionStorage para usarlo en otras páginas
+        sessionStorage.setItem('id_usuario', result.id_usuario);
+        sessionStorage.setItem('usuario', username);
+        sessionStorage.setItem('jwt_token', result.token); // Guarda el token JWT en sessionStorage
+        localStorage.setItem("isLoggedIn", "true"); // Marca al usuario como logueado en localStorage
+        showMessage(registeredMessage, result.mensaje || "¡Inicio de sesión exitoso!", "green");
         setTimeout(() => {
-          window.location.href = "../HTML/Tienda.html";
-        }, 3000);
+          window.location.href = "../HTML/Formulario.html"; // Redirige al formulario principal
+        }, 300);
       } else {
-        showMessage(
-          usernameError,
-          result.msg || "Usuario o contraseña incorrectos" // 👈 usa el mismo campo `msg` del backend
-        );
+        showMessage(usernameError, result.mensaje || "Usuario o contraseña incorrectos");
       }
     } catch (error) {
       showMessage(usernameError, "Error de conexión con el servidor.");
@@ -166,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const phone = Number(document.getElementById("phone").value.trim());
     const email = document.getElementById("email").value.trim();
     const address = document.getElementById("address").value.trim();
+    
 
     if (!newUsername) {
       document.getElementById("newUsernameError").textContent =
@@ -200,20 +226,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Enviar datos al backend para registrar usuario real
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/registrar_usuario",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            nombre_usuario: newUsername,
-            contraseña_usuario: newPassword,
-            teléfono_usuario: phone,
-            correo_usuario: email,
-            dirección_usuario: address,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:3000/api/registrar_usuario", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre_usuario: newUsername,
+          contraseña_usuario: newPassword,
+          teléfono_usuario: phone,
+          correo_usuario: email,
+          dirección_usuario: address
+        }),
+      });
       const text = await response.text();
       if (response.ok) {
         registerSuccess.style.display = "block";

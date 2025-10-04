@@ -1,17 +1,69 @@
-// Agregar eventos a los botones existentes
-proveedoresTableBody.addEventListener("click", (e) => {
-  if (e.target.classList.contains("btn-edit")) {
-    const id = e.target.closest("tr").children[0].textContent;
-    editarProveedor(id);
-  } else if (e.target.classList.contains("btn-delete")) {
-    const id = e.target.closest("tr").children[0].textContent;
+document.addEventListener("DOMContentLoaded", function () {
+  // Obtener token JWT una sola vez para toda la página
+  const token = sessionStorage.getItem("jwt_token");
+  const isLoggedIn = !!token;
+
+  // --- Mostrar el nombre del usuario en la barra de navegación ---
+  async function mostrarNombreUsuario() {
+    // Si no está logueado, no hacemos nada
+    if (!isLoggedIn) return;
+
+    try {
+      const res = await fetch("http://localhost:3000/api/perfil_usuario", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (res.ok) {
+        const userData = await res.json();
+        const navbar = document.querySelector(".navbar-collapse");
+        
+        if (navbar) {
+          // Crear el elemento para el mensaje de bienvenida
+          const userDiv = document.createElement("div");
+          userDiv.className = "ms-auto bienvenido-usuario";
+          
+          // Crear el texto con formato (usando las clases CSS)
+          const welcomeText = document.createElement("span");
+          welcomeText.className = "bienvenido-texto"; // Usa la clase definida en Baterias.css
+          welcomeText.textContent = `Bienvenido, ${userData.nombre_usuario || 'usuario'}`;
+          
+          // Añadir el texto al div
+          userDiv.appendChild(welcomeText);
+          
+          // Añadir el div a la navbar
+          navbar.appendChild(userDiv);
+        }
+      }
+    } catch (e) {
+      console.warn("Error al obtener información del usuario:", e);
+    }
   }
+  mostrarNombreUsuario();
+  
+  // Cargar proveedores cuando la página se cargue
+  cargarProveedores();
+
+  // Agregar eventos a los botones existentes
+  const proveedoresTableBody = document.getElementById("proveedoresTableBody");
+  proveedoresTableBody.addEventListener("click", (e) => {
+    if (e.target.classList.contains("btn-edit")) {
+      const id = e.target.closest("tr").children[0].textContent;
+      editarProveedor(id);
+    } else if (e.target.classList.contains("btn-delete")) {
+      const id = e.target.closest("tr").children[0].textContent;
+      // Aquí iría la función para eliminar proveedor
+    }
+  });
 });
 
 // --- Cargar proveedores desde la API y renderizar tabla ---
 async function cargarProveedores() {
+  // Obtener token JWT
+  const token = sessionStorage.getItem("jwt_token");
   try {
-    const res = await fetch('http://localhost:3000/api/proveedores');
+    const res = await fetch('http://localhost:3000/api/proveedores', {
+      headers: { "Authorization": token ? `Bearer ${token}` : '' }
+    });
     const proveedores = await res.json();
     proveedoresTableBody.innerHTML = '';
     proveedores.forEach(p => {
@@ -62,16 +114,24 @@ document.getElementById('guardarProveedorBtn').addEventListener('click', async (
     let res;
     if (id) {
       // Editar
+      const token = sessionStorage.getItem("jwt_token");
       res = await fetch(`http://localhost:3000/api/proveedores/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify(body)
       });
     } else {
       // Agregar
+      const token = sessionStorage.getItem("jwt_token");
       res = await fetch('http://localhost:3000/api/proveedores', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify(body)
       });
     }
@@ -101,7 +161,11 @@ proveedoresTableBody.addEventListener('click', (e) => {
     mostrarModalProveedor('editar', proveedor);
   } else if (e.target.classList.contains('btn-delete')) {
     if (confirm('¿Eliminar proveedor ' + id + '?')) {
-      fetch(`http://localhost:3000/api/proveedores/${id}`, { method: 'DELETE' })
+      const token = sessionStorage.getItem("jwt_token");
+      fetch(`http://localhost:3000/api/proveedores/${id}`, { 
+        method: 'DELETE',
+        headers: { 'Authorization': token ? `Bearer ${token}` : '' }
+      })
         .then(res => {
           if (res.ok) cargarProveedores();
           else res.text().then(msg => alert('Error: ' + msg));

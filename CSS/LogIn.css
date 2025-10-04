@@ -8,7 +8,16 @@ body {
   overflow-x: hidden !important;
 }
 
-/* Responsive improvements for LogIn */
+/* Estilos para el mensaje de bienvenida del usuario */
+.bienvenido-usuario {
+  margin-right: 15px;
+  padding: 8px;
+}
+
+.bienvenido-texto {
+  font-weight: bold;
+  color: #ffc107;
+}
 
 /* Main container */
 .main-container {

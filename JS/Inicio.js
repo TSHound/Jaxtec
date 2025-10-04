@@ -1,4 +1,45 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Obtener token JWT una sola vez para toda la página
+  const token = sessionStorage.getItem("jwt_token");
+  const isLoggedIn = !!token;
+
+  // --- Mostrar el nombre del usuario en la barra de navegación ---
+  async function mostrarNombreUsuario() {
+    // Si no está logueado, no hacemos nada
+    if (!isLoggedIn) return;
+
+    try {
+      const res = await fetch("http://localhost:3000/api/perfil_usuario", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (res.ok) {
+        const userData = await res.json();
+        const navbar = document.querySelector(".navbar-collapse");
+        
+        if (navbar) {
+          // Crear el elemento para el mensaje de bienvenida
+          const userDiv = document.createElement("div");
+          userDiv.className = "ms-auto bienvenido-usuario";
+          
+          // Crear el texto con formato (usando las clases CSS)
+          const welcomeText = document.createElement("span");
+          welcomeText.className = "bienvenido-texto"; // Usa la clase definida en Baterias.css
+          welcomeText.textContent = `Bienvenido, ${userData.nombre_usuario || 'usuario'}`;
+          
+          // Añadir el texto al div
+          userDiv.appendChild(welcomeText);
+          
+          // Añadir el div a la navbar
+          navbar.appendChild(userDiv);
+        }
+      }
+    } catch (e) {
+      console.warn("Error al obtener información del usuario:", e);
+    }
+  }
+  mostrarNombreUsuario();
+  
   const searchForm = document.getElementById("searchForm");
   const searchInput = document.getElementById("searchInput");
   let matches = [];
@@ -78,35 +119,16 @@ document.addEventListener("DOMContentLoaded", function () {
       mark.replaceWith(textNode);
     });
   }
-});
 
-// JS migrado desde el <script> interno de Inicio.html
-
-document.addEventListener("DOMContentLoaded", () => {
-  const formularioLink = document.getElementById("formularioLink");
-  const modal = document.getElementById("loginAlertModal");
-  const closeModalBtn = document.getElementById("closeModalBtn");
-
-  formularioLink.addEventListener("click", (e) => {
-    // Simula estado de sesión (true/false)
-    // Por ejemplo, en tu app real, usa cookies, localStorage, session o llamada a backend
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
-    if (!isLoggedIn) {
-      e.preventDefault();
-      modal.style.display = "flex";
-    }
-    // Si está logueado, se permite ir al formulario
-  });
-
-  closeModalBtn.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-
-  // Cerrar modal si clic fuera del contenido
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.style.display = "none";
-    }
+  // Configurar acceso al formulario de cotización
+  const formularioLinks = document.querySelectorAll('a[href="Formulario.html"]');
+  formularioLinks.forEach(link => {
+    link.addEventListener("click", (e) => {
+      if (!isLoggedIn) {
+        e.preventDefault();
+        alert("Atención: Debes iniciar sesión.");
+      }
+      // Si está logueado, se permite ir al formulario normalmente
+    });
   });
 });

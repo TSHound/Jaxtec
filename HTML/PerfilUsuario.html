@@ -63,7 +63,7 @@
               </ul>
             </li>
             <li class="nav-item">
-              <a id="formularioLink" class="nav-link" href="#">Formulario</a>
+              <a class="nav-link" href="Formulario.html">Cotización</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="LogIn.html">Log In</a>
@@ -72,6 +72,57 @@
               <a class="nav-link active" href="PerfilUsuario.html">Perfil</a>
             </li>
           </ul>
+
+          <!-- Buscador en navbar -->
+          <form
+            id="searchFormNavbar"
+            class="d-flex"
+            role="search"
+            onsubmit="event.preventDefault();"
+          >
+            <input
+              id="searchInputNavbar"
+              class="form-control me-2"
+              type="search"
+              placeholder="Buscar"
+              aria-label="Buscar"
+              style="
+                font-size: 0.95rem;
+                height: 34px;
+                border-radius: 0.3rem;
+                border: 2px solid #ffc107;
+                background: #fff;
+                color: #000;
+                padding: 0.25rem 0.75rem;
+              "
+            />
+            <button class="btn btn-outline-success btn-buscar" type="submit">
+              Buscar
+            </button>
+          </form>
+
+          <!-- Icono carrito -->
+          <a
+            href="carrito.html"
+            class="ms-3 d-flex align-items-center"
+            title="Carrito de compras"
+            style="color: #ffc107; font-size: 1.5rem"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              class="bi bi-cart"
+              viewBox="0 0 16 16"
+              style="width: 24px; height: 24px"
+            >
+              <path
+                d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 5H14.5a.5.5 0 0 1 .49.598l-1.5 7A.5.5 0 0 1 13 13H4a.5.5 0 0 1-.491-.408L1.01 2H.5a.5.5 0 0 1-.5-.5zm3.14 4l1.25 6h7.22l1.25-6H3.14z"
+              />
+              <path
+                d="M5.5 14a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
+              />
+            </svg>
+          </a>
         </div>
       </div>
     </nav>
@@ -83,18 +134,60 @@
         <div id="infoUsuarioPerfil" class="mb-4"></div>
       </section>
 
+      <section class="mt-4">
+        <h2>Mis Pedidos</h2>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Total</th>
+                <th>Detalles</th>
+              </tr>
+            </thead>
+            <tbody id="tablaPedidos">
+              <!-- Los pedidos se cargarán aquí dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Modal para mostrar detalles del pedido -->
+      <div class="modal fade" id="detallesPedidoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Detalles del Pedido</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Artículo</th>
+                      <th class="text-center">Cantidad</th>
+                      <th class="text-end">Precio Unitario</th>
+                      <th class="text-end">Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody id="detallesPedidoTabla">
+                    <!-- Aquí se cargarán los detalles del pedido -->
+                  </tbody>
+                  <tfoot id="detallesPedidoTotal">
+                    <!-- Aquí se mostrará el total -->
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <section class="mt-5">
         <button class="btn-logout">Cerrar sesión</button>
       </section>
-    </div>
-
-    <!-- Modal -->
-    <div id="loginModal" class="custom-modal" role="dialog">
-      <div class="custom-modal-content">
-        <h2>Atención</h2>
-        <p>Debes iniciar sesión para acceder al formulario.</p>
-        <button id="closeModalBtn">Cerrar</button>
-      </div>
     </div>
 
     <!-- Bootstrap JS -->

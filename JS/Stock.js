@@ -20,12 +20,52 @@ function filterTable() {
   });
 }
 
-
 searchInput.addEventListener("input", filterTable);
 statusFilter.addEventListener("change", filterTable);
 
 // --- Lógica para agregar producto ---
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", function () {
+  // Obtener token JWT una sola vez para toda la página
+  const token = sessionStorage.getItem("jwt_token");
+  const isLoggedIn = !!token;
+
+  // --- Mostrar el nombre del usuario en la barra de navegación ---
+  async function mostrarNombreUsuario() {
+    // Si no está logueado, no hacemos nada
+    if (!isLoggedIn) return;
+
+    try {
+      const res = await fetch("http://localhost:3000/api/perfil_usuario", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (res.ok) {
+        const userData = await res.json();
+        const navbar = document.querySelector(".navbar-collapse");
+        
+        if (navbar) {
+          // Crear el elemento para el mensaje de bienvenida
+          const userDiv = document.createElement("div");
+          userDiv.className = "ms-auto bienvenido-usuario";
+          
+          // Crear el texto con formato (usando las clases CSS)
+          const welcomeText = document.createElement("span");
+          welcomeText.className = "bienvenido-texto"; // Usa la clase definida en Baterias.css
+          welcomeText.textContent = `Bienvenido, ${userData.nombre_usuario || 'usuario'}`;
+          
+          // Añadir el texto al div
+          userDiv.appendChild(welcomeText);
+          
+          // Añadir el div a la navbar
+          navbar.appendChild(userDiv);
+        }
+      }
+    } catch (e) {
+      console.warn("Error al obtener información del usuario:", e);
+    }
+  }
+  mostrarNombreUsuario();
+  
   const guardarBtn = document.querySelector('#addProductModal .btn-warning');
   const modal = document.getElementById('addProductModal');
   const form = modal.querySelector('form');
@@ -44,9 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     try {
+      const token = sessionStorage.getItem("jwt_token");
       const res = await fetch('http://localhost:3000/api/articulo', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify({
           nombre_articulo,
           cantidad_articulo,
@@ -76,8 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Cargar artículos desde la API y renderizar tabla ---
 async function cargarArticulosStock() {
   const tbody = document.querySelector('#inventoryTable tbody');
+  // Obtener token JWT
+  const token = sessionStorage.getItem("jwt_token");
   try {
-    const res = await fetch('http://localhost:3000/api/articulo');
+    const res = await fetch('http://localhost:3000/api/articulo', {
+      headers: { "Authorization": token ? `Bearer ${token}` : '' }
+    });
     const articulos = await res.json();
     tbody.innerHTML = '';
     articulos.forEach(art => {

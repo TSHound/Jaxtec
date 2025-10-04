@@ -7,6 +7,18 @@ body {
   font-size: 1.2rem;
   color: #fff;
 }
+
+/* Estilos para el mensaje de bienvenida del usuario */
+.bienvenido-usuario {
+  margin-right: 15px;
+  padding: 8px;
+}
+
+.bienvenido-texto {
+  font-weight: bold;
+  color: #ffc107;
+}
+
 .navbar {
   background-color: #000 !important;
   backdrop-filter: none;
