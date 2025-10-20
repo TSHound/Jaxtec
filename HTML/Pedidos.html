@@ -18,7 +18,7 @@
     />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../CSS/Pedidos.css">
+    <link rel="stylesheet" href="../CSS/Pedidos.css" />
   </head>
   <body>
     <!-- Navbar -->
@@ -45,9 +45,6 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 1rem">
             <li class="nav-item">
-              <a class="nav-link" href="Inicio.html">Inicio</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="Stock.html">Stock</a>
             </li>
             <li class="nav-item">
@@ -69,82 +66,70 @@
         </div>
       </div>
     </nav>
-    <div class="container" role="main">
+
+    <main class="container my-4" role="main">
       <h1>Gestión de Pedidos</h1>
 
-      <table aria-label="Lista de pedidos">
+      <!-- Tabla pedidos -->
+      <table class="table table-striped" aria-label="Lista de pedidos">
         <thead>
           <tr>
-            <th>Pedido ID</th>
-            <th>Usuario</th>
-            <th>Producto</th>
-            <th>Cantidad</th>
             <th>Fecha</th>
             <th>Estado</th>
+            <th>Total</th>
+            <th>Detalles</th>
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody id="pedidosTableBody">
-          <tr>
-            <td>101</td>
-            <td>Carlos Méndez</td>
-            <td>Brake Disc</td>
-            <td>2</td>
-            <td>2025-08-10</td>
-            <td>Pendiente</td>
-            <td>
-              <button
-                class="btn-update"
-                onclick="alert('Actualizar pedido 101')"
-              >
-                Actualizar
-              </button>
-              <button class="btn-delete" onclick="alert('Eliminar pedido 101')">
-                Eliminar
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>102</td>
-            <td>Lucía Ramírez</td>
-            <td>Spark Plug</td>
-            <td>4</td>
-            <td>2025-08-11</td>
-            <td>Enviado</td>
-            <td>
-              <button
-                class="btn-update"
-                onclick="alert('Actualizar pedido 102')"
-              >
-                Actualizar
-              </button>
-              <button class="btn-delete" onclick="alert('Eliminar pedido 102')">
-                Eliminar
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>103</td>
-            <td>Ana Torres</td>
-            <td>Brake Disc</td>
-            <td>1</td>
-            <td>2025-08-12</td>
-            <td>Completado</td>
-            <td>
-              <button
-                class="btn-update"
-                onclick="alert('Actualizar pedido 103')"
-              >
-                Actualizar
-              </button>
-              <button class="btn-delete" onclick="alert('Eliminar pedido 103')">
-                Eliminar
-              </button>
-            </td>
-          </tr>
-          <!-- Más filas según pedidos -->
+        <tbody id="tablaPedidos">
+          <!-- Se cargan pedidos vía JS -->
         </tbody>
       </table>
+
+      <!-- Info usuario -->
+      <div id="infoUsuarioPerfil" class="mt-4"></div>
+    </main>
+
+    <!-- Modal detalles pedido -->
+    <div
+      class="modal fade"
+      id="detallesPedidoModal"
+      tabindex="-1"
+      aria-labelledby="detallesPedidoModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="detallesPedidoModalLabel">
+              Detalles del Pedido
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID Pedido</th>
+                  <th>ID Artículo</th>
+                  <th>Artículo</th>
+                  <th>Cantidad</th>
+                  <th>Precio Unitario</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody id="detallesPedidoTabla">
+                <!-- Detalles cargados vía JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Bootstrap JS Bundle -->

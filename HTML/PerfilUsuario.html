@@ -36,69 +36,33 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 1rem">
-            <li class="nav-item">
-              <a class="nav-link" href="Inicio.html">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="Perfil.html">Nosotros</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="Tienda.html">Tienda</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="Inicio.html">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="Perfil.html">Nosotros</a></li>
+            <li class="nav-item"><a class="nav-link" href="Tienda.html">Tienda</a></li>
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                data-bs-toggle="dropdown"
-                >Tecnología</a
-              >
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Tecnología</a>
               <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="Vehiculos.html">Vehículos</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="Baterias.html">Baterías</a>
-                </li>
+                <li><a class="dropdown-item" href="Vehiculos.html">Vehículos</a></li>
+                <li><a class="dropdown-item" href="Baterias.html">Baterías</a></li>
                 <li><a class="dropdown-item" href="Vision.html">Visión</a></li>
               </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="Formulario.html">Cotización</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="LogIn.html">Log In</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="PerfilUsuario.html">Perfil</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="Formulario.html">Cotización</a></li>
+            <li class="nav-item"><a class="nav-link" href="LogIn.html">Log In</a></li>
+            <li class="nav-item"><a class="nav-link active" href="PerfilUsuario.html">Perfil</a></li>
           </ul>
 
           <!-- Buscador en navbar -->
-          <form
-            id="searchFormNavbar"
-            class="d-flex"
-            role="search"
-            onsubmit="event.preventDefault();"
-          >
+          <form id="searchFormNavbar" class="d-flex" role="search" onsubmit="event.preventDefault();">
             <input
               id="searchInputNavbar"
               class="form-control me-2"
               type="search"
               placeholder="Buscar"
               aria-label="Buscar"
-              style="
-                font-size: 0.95rem;
-                height: 34px;
-                border-radius: 0.3rem;
-                border: 2px solid #ffc107;
-                background: #fff;
-                color: #000;
-                padding: 0.25rem 0.75rem;
-              "
+              style="font-size: 0.95rem; height: 34px; border-radius: 0.3rem; border: 2px solid #ffc107; background: #fff; color: #000; padding: 0.25rem 0.75rem;"
             />
-            <button class="btn btn-outline-success btn-buscar" type="submit">
-              Buscar
-            </button>
+            <button class="btn btn-outline-success btn-buscar" type="submit">Buscar</button>
           </form>
 
           <!-- Icono carrito -->
@@ -108,19 +72,9 @@
             title="Carrito de compras"
             style="color: #ffc107; font-size: 1.5rem"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              class="bi bi-cart"
-              viewBox="0 0 16 16"
-              style="width: 24px; height: 24px"
-            >
-              <path
-                d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 5H14.5a.5.5 0 0 1 .49.598l-1.5 7A.5.5 0 0 1 13 13H4a.5.5 0 0 1-.491-.408L1.01 2H.5a.5.5 0 0 1-.5-.5zm3.14 4l1.25 6h7.22l1.25-6H3.14z"
-              />
-              <path
-                d="M5.5 14a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16" style="width: 24px; height: 24px">
+              <path d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 5H14.5a.5.5 0 0 1 .49.598l-1.5 7A.5.5 0 0 1 13 13H4a.5.5 0 0 1-.491-.408L1.01 2H.5a.5.5 0 0 1-.5-.5zm3.14 4l1.25 6h7.22l1.25-6H3.14z"/>
+              <path d="M5.5 14a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
             </svg>
           </a>
         </div>
@@ -128,9 +82,10 @@
     </nav>
 
     <!-- Contenido principal -->
-    <div class="container">
+    <div class="container my-4">
       <h1 class="mb-4">Perfil de Usuario</h1>
-      <section>
+      
+      <section id="perfilUsuario">
         <div id="infoUsuarioPerfil" class="mb-4"></div>
       </section>
 
@@ -147,13 +102,25 @@
               </tr>
             </thead>
             <tbody id="tablaPedidos">
-              <!-- Los pedidos se cargarán aquí dinámicamente -->
+              <!-- Pedidos se cargarán dinámicamente -->
             </tbody>
           </table>
         </div>
       </section>
 
-      <!-- Modal para mostrar detalles del pedido -->
+      <!-- Botón Mis Cotizaciones -->
+      <section class="mt-4 text-center">
+        <button type="button" class="btn btn-info px-4" id="btnMisCotizaciones">Mis Cotizaciones</button>
+      </section>
+
+      <!-- Visualización de las cotizaciones del usuario logueado -->
+      <div id="misCotizaciones" class="cotizaciones-section" style="display:none;">
+        <h4 class="text-warning mb-3">Mis Cotizaciones</h4>
+        <div id="listaCotizaciones" class="cotizaciones-container"></div>
+      </div>
+
+
+      <!-- Modal detalles del pedido -->
       <div class="modal fade" id="detallesPedidoModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -172,12 +139,7 @@
                       <th class="text-end">Subtotal</th>
                     </tr>
                   </thead>
-                  <tbody id="detallesPedidoTabla">
-                    <!-- Aquí se cargarán los detalles del pedido -->
-                  </tbody>
-                  <tfoot id="detallesPedidoTotal">
-                    <!-- Aquí se mostrará el total -->
-                  </tfoot>
+                  <tbody id="detallesPedidoTabla"></tbody>
                 </table>
               </div>
             </div>
@@ -185,8 +147,8 @@
         </div>
       </div>
 
-      <section class="mt-5">
-        <button class="btn-logout">Cerrar sesión</button>
+      <section class="mt-5 text-center">
+        <button class="btn btn-danger btn-logout">Cerrar sesión</button>
       </section>
     </div>
 

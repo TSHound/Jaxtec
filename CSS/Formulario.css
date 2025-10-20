@@ -13,10 +13,26 @@ body {
   padding: 8px;
 }
 
+#tipo_combustible,
+#tipo_combustible option {
+  color: #000 !important;
+}
+
 .bienvenido-texto {
   font-weight: bold;
   color: #ffc107;
 }
+
+.texto-negro {
+  color: #000 !important;
+}
+.btn-warning.texto-negro,
+.btn-warning.texto-negro:hover,
+.btn-warning.texto-negro:focus,
+.btn-warning.texto-negro:active {
+  color: #000 !important; /* fuerza que el texto sea negro */
+}
+
 
 .navbar {
   background-color: #000 !important;

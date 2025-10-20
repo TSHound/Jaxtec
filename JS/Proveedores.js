@@ -81,7 +81,7 @@ async function cargarProveedores() {
       proveedoresTableBody.appendChild(tr);
     });
   } catch (e) {
-    proveedoresTableBody.innerHTML = '<tr><td colspan="5">Error al cargar proveedores</td></tr>';
+    proveedoresTableBody.innerHTML = '<tr><td colspan="5">Error al cargar proveedores.</td></tr>';
   }
 }
 
@@ -168,9 +168,9 @@ proveedoresTableBody.addEventListener('click', (e) => {
       })
         .then(res => {
           if (res.ok) cargarProveedores();
-          else res.text().then(msg => alert('Error: ' + msg));
+          else res.text().then(msg => alert('Error al eliminar proveedor: asegúrese de que no tenga artículos asociados.'));
         })
-        .catch(() => alert('Error de conexión'));
+        .catch(() => alert('Error de conexión.'));
     }
   }
 });

@@ -42,9 +42,6 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 1rem">
             <li class="nav-item">
-              <a class="nav-link" href="Inicio.html">Inicio</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link active" href="Stock.html">Stock</a>
             </li>
             <li class="nav-item">
@@ -99,14 +96,18 @@
         <thead>
           <tr>
             <th>Producto</th>
+            <th>Cantidad</th>
             <th>Precio</th>
-            <th>Stock</th>
+            <th>Costo</th>
+            <th>Proveedor</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Las filas de productos se llenan dinámicamente desde JS -->
+          <tr>
+            <td colspan="7" class="text-center">Cargando artículos...</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -122,7 +123,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="addProductLabel">Agregar Producto</h5>
+            <h5 class="modal-title" id="addProductLabel">Agregar artículo</h5>
             <button
               type="button"
               class="btn-close btn-close-white"
@@ -132,11 +133,24 @@
           <div class="modal-body">
             <form>
               <div class="mb-3">
-                <label class="form-label">Nombre del producto</label>
+                <label class="form-label">Nombre del artículo</label>
                 <input
                   type="text"
                   class="form-control"
+                  id="productName"
                   placeholder="Ej: Pastillas de freno"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Cantidad</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="productQuantity"
+                  placeholder="Ej: 50"
+                  min="0"
+                  required
                 />
               </div>
               <div class="mb-3">
@@ -144,22 +158,31 @@
                 <input
                   type="number"
                   class="form-control"
+                  id="productPrice"
                   placeholder="Ej: 120.50"
+                  min="0"
+                  step="0.01"
+                  required
                 />
               </div>
               <div class="mb-3">
-                <label class="form-label">Cantidad en stock</label>
+                <label class="form-label">Costo</label>
                 <input
                   type="number"
                   class="form-control"
-                  placeholder="Ej: 50"
+                  id="productCost"
+                  placeholder="Ej: 80.00"
+                  min="0"
+                  step="0.01"
+                  required
                 />
               </div>
+              <!-- Selector de proveedores -->
               <div class="mb-3">
-                <label class="form-label">Estado</label>
-                <select class="form-select">
-                  <option value="in">En Stock</option>
-                  <option value="out">Agotado</option>
+                <label for="productProvider" class="form-label">Proveedor</label>
+                <select class="form-control" id="productProvider" required>
+                  <option value="">Seleccione un proveedor</option>
+                  <!-- Las opciones se cargarán dinámicamente -->
                 </select>
               </div>
               <div class="mb-3">
@@ -177,6 +200,42 @@
               Cancelar
             </button>
             <button type="button" class="btn btn-warning">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para editar artículo -->
+    <div class="modal fade" id="editarArticuloModal" tabindex="-1" aria-labelledby="editarArticuloModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editarArticuloModalLabel">Editar Artículo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editarArticuloForm">
+              <div class="mb-3">
+                <label for="editNombre" class="form-label">Nombre del producto</label>
+                <input type="text" class="form-control" id="editNombre" required>
+              </div>
+              <div class="mb-3">
+                <label for="editCantidad" class="form-label">Cantidad</label>
+                <input type="number" class="form-control" id="editCantidad" min="0" required>
+              </div>
+              <div class="mb-3">
+                <label for="editPrecio" class="form-label">Precio</label>
+                <input type="number" class="form-control" id="editPrecio" min="0" step="0.01" required>
+              </div>
+              <div class="mb-3">
+                <label for="editCosto" class="form-label">Costo</label>
+                <input type="number" class="form-control" id="editCosto" min="0" step="0.01">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="guardarCambios">Guardar cambios</button>
           </div>
         </div>
       </div>

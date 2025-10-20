@@ -7,14 +7,20 @@ const path = require("path");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { body, validationResult } = require("express-validator"); // para validaciones
+const { body, validationResult } = require("express-validator");
+const nodemailer = require("nodemailer");
 
 require("dotenv").config(); // usar variables de entorno
 const app = express();
 // Middleware para permitir CORS y parsear JSON.
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+app.use("/HTML", express.static(path.join(__dirname, "HTML")));
+app.use("/js", express.static(path.join(__dirname, "JS")));
+app.use("/css", express.static(path.join(__dirname, "CSS")));
+app.use("/imagenes", express.static(path.join(__dirname, "Imagenes")));
 // Crear router para las API
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
@@ -25,6 +31,7 @@ const db = mysql.createConnection({
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "admin",
   database: process.env.DB_NAME || "jaxtec",
+    charset: "utf8mb4",
 });
 
 db.connect((err) => {
@@ -136,6 +143,132 @@ app.post(
     }
   }
 );
+
+// ===== Ruta: Enviar correo de recuperación de contraseña =====
+app.post("/api/enviar_correo_recuperacion", async (req, res) => {
+  const { nombre_usuario } = req.body;
+
+  if (!nombre_usuario) {
+    return res.status(400).json({ ok: false, mensaje: "Falta el nombre de usuario." });
+  }
+
+  try {
+    // 🔹 Obtener correo del usuario usando promesas
+    const [rows] = await db.promise().query(
+      "SELECT correo_usuario FROM usuario WHERE nombre_usuario = ?",
+      [nombre_usuario]
+    );
+
+    if (!rows || rows.length === 0) {
+      return res.status(404).json({ ok: false, mensaje: "Usuario no encontrado." });
+    }
+
+    const correo_usuario = rows[0].correo_usuario;
+
+    // 🔹 Generar un token temporal (por ejemplo JWT o un UUID)
+    const token = jwt.sign(
+      { nombre_usuario }, 
+      process.env.JWT_SECRET || "clave_secreta_jaxtec", 
+      { expiresIn: "1h" } // válido por 1 hora
+    );
+
+    // 🔹 Configurar transporter con app password
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL_USER || "jaxtec1@gmail.com",
+        pass: process.env.MAIL_PASS || "irwhdznjkrmrozuk",
+      },
+    });
+
+    await transporter.verify();
+
+    // 🔹 Configurar correo con botón
+    const mailOptions = {
+      from: `"Soporte JAXTEC" <${process.env.MAIL_USER || "jaxtec1@gmail.com"}>`,
+      to: correo_usuario,
+      subject: "Recuperación de contraseña - JAXTEC",
+      html: `
+        <div style="font-family: Arial; background:#fffbe6; border:1px solid #fdd835; border-radius:10px; padding:20px; text-align:center;">
+          <h2 style="color:#fdd835;">JAXTEC</h2>
+          <p>Hola ${nombre_usuario},</p>
+          <p>Haz clic en el botón para restablecer tu contraseña:</p>
+          <a href="${process.env.FRONT_URL || "http://localhost:3000"}../contrasena.html?token=${token}" 
+             style="display:inline-block; padding:12px 25px; margin:15px 0; background:#fdd835; color:#000; font-weight:bold; text-decoration:none; border-radius:5px;">
+             Restablecer Contraseña
+          </a>
+          <p style="font-size:0.8em; color:#555;">Si no solicitaste este correo, ignóralo.</p>
+          <br/>
+          <p style="font-size:0.8em; color:#555;">© 2025 JAXTEC</p>
+        </div>
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log("✅ Correo enviado a:", correo_usuario, info.response);
+
+    res.status(200).json({
+      ok: true,
+      mensaje: `Correo de recuperación enviado a ${correo_usuario}.`,
+      info: info.response,
+    });
+
+  } catch (error) {
+    console.error("❌ Error al enviar correo de recuperación:", error);
+    res.status(500).json({
+      ok: false,
+      mensaje: "Error al procesar la solicitud de recuperación de contraseña.",
+      error: error.message,
+    });
+  }
+});
+
+// ===== Ruta: Cambiar contraseña =====
+app.post("/api/cambiar_contrasena", async (req, res) => {
+  const { token, nueva_contrasena } = req.body;
+
+  if (!token || !nueva_contrasena) {
+    return res.status(400).json({ ok: false, mensaje: "Faltan datos necesarios." });
+  }
+
+  try {
+    // 🔹 Verificar token JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "clave_secreta_jaxtec");
+    const nombre_usuario = decoded.nombre_usuario;
+
+    // 🔹 Hashear nueva contraseña
+    const hashedPassword = await bcrypt.hash(nueva_contrasena, 10);
+
+    // 🔹 Actualizar contraseña en la base de datos
+    await db.promise().query(
+      "UPDATE usuario SET contraseña_usuario = ? WHERE nombre_usuario = ?",
+      [hashedPassword, nombre_usuario]
+    );
+
+    res.status(200).json({
+      ok: true,
+      mensaje: "Contraseña actualizada correctamente."
+    });
+
+  } catch (error) {
+    console.error("❌ Error al cambiar contraseña:", error);
+
+    let mensaje = "Error al procesar la solicitud.";
+    if (error.name === "TokenExpiredError") {
+      mensaje = "El enlace ha expirado, solicita uno nuevo.";
+    } else if (error.name === "JsonWebTokenError") {
+      mensaje = "Token inválido.";
+    }
+
+    res.status(400).json({
+      ok: false,
+      mensaje,
+      error: error.message
+    });
+  }
+});
+
 
 // Middleware para verificar el token en rutas protegidas.
 function verifyToken(req, res, next) {
@@ -333,6 +466,168 @@ body("teléfono_usuario").isNumeric().withMessage("Teléfono inválido"),
     }
   }
 );
+
+
+app.get("/api/usuarios", (req, res) => {
+  const query = `
+    SELECT 
+      id_usuario,
+      nombre_usuario,
+      contraseña_usuario AS contrasena_usuario,
+      correo_usuario,
+      teléfono_usuario AS teléfono_usuario,
+      dirección_usuario AS direccion_usuario,
+      rol_usuario
+    FROM usuario
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("❌ Error al obtener usuarios:", err.message);
+      return res.status(500).json({ mensaje: "Error al obtener usuarios" });
+    }
+
+    res.json(results);
+  });
+});
+
+// --- Modificar usuario ---
+app.put("/api/usuarios/:id", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).send("No autorizado");
+
+  const id = req.params.id;
+  const { nombre_usuario, correo_usuario, teléfono_usuario } = req.body;
+
+  if (!nombre_usuario || !correo_usuario || !teléfono_usuario) {
+    return res.status(400).send("Faltan datos obligatorios");
+  }
+
+  const query = `
+    UPDATE usuario
+    SET nombre_usuario = ?, correo_usuario = ?, teléfono_usuario = ? 
+    WHERE id_usuario = ?
+  `;
+  db.query(query, [nombre_usuario, correo_usuario, teléfono_usuario, id], (err, result) => {
+    if (err) return res.status(500).send("Error al actualizar usuario");
+    res.json({ message: "Usuario actualizado correctamente" });
+  });
+});
+
+// --- Eliminar usuario ---
+app.delete("/api/usuarios/:id", verificarToken, async (req, res) => {
+  const userId = req.params.id;
+  console.log("🗑️ Intentando eliminar usuario ID:", userId);
+
+  try {
+    // 1. Verificar si el usuario existe
+    const [userExists] = await db.promise().query(
+      'SELECT id_usuario, nombre_usuario FROM usuario WHERE id_usuario = ?',
+      [userId]
+    );
+
+    if (!userExists.length) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    console.log("✅ Usuario encontrado:", userExists[0].nombre_usuario);
+
+    // 2. Verificar registros relacionados en tablas específicas
+    let tieneRegistros = false;
+    let registrosEncontrados = [];
+
+    // Verificar tabla pedido
+    try {
+      const [pedidos] = await db.promise().query(
+        'SELECT COUNT(*) as count FROM pedido WHERE Usuario_id_usuario = ?',
+        [userId]
+      );
+      if (pedidos[0].count > 0) {
+        tieneRegistros = true;
+        registrosEncontrados.push(`pedidos: ${pedidos[0].count}`);
+      }
+    } catch (err) {
+      console.error("❌ Error verificando tabla pedido:", err.message);
+    }
+
+    // Verificar tabla cotización
+    try {
+      const [cotizaciones] = await db.promise().query(
+        'SELECT COUNT(*) as count FROM cotización WHERE Usuario_id_usuario = ?',
+        [userId]
+      );
+      if (cotizaciones[0].count > 0) {
+        tieneRegistros = true;
+        registrosEncontrados.push(`cotizaciones: ${cotizaciones[0].count}`);
+      }
+    } catch (err) {
+      console.error("❌ Error verificando tabla cotización:", err.message);
+    }
+
+    // Verificar tabla sesiónusuario
+    try {
+      const [sesiones] = await db.promise().query(
+        'SELECT COUNT(*) as count FROM sesiónusuario WHERE id_usuario = ?',
+        [userId]
+      );
+      if (sesiones[0].count > 0) {
+        tieneRegistros = true;
+        registrosEncontrados.push(`sesiones: ${sesiones[0].count}`);
+      }
+    } catch (err) {
+      console.error("❌ Error verificando tabla sesiónusuario:", err.message);
+    }
+
+    // Verificar tabla carrito
+    try {
+      const [carritos] = await db.promise().query(
+        'SELECT COUNT(*) as count FROM carrito WHERE Usuario_id_usuario = ?',
+        [userId]
+      );
+      if (carritos[0].count > 0) {
+        tieneRegistros = true;
+        registrosEncontrados.push(`carritos: ${carritos[0].count}`);
+      }
+    } catch (err) {
+      console.error("❌ Error verificando tabla carrito:", err.message);
+    }
+
+    // 3. Si tiene registros, no permitir eliminación
+    if (tieneRegistros) {
+      console.log("⚠️ Usuario tiene registros relacionados:", registrosEncontrados);
+      return res.status(400).json({ 
+        mensaje: "No se puede eliminar el usuario porque tiene registros relacionados",
+        detalles: registrosEncontrados
+      });
+    }
+
+    // 4. Si no tiene registros, proceder a eliminar
+    console.log("🗑️ Usuario sin registros relacionados, procediendo a eliminar...");
+    const [deleteResult] = await db.promise().query(
+      'DELETE FROM usuario WHERE id_usuario = ?',
+      [userId]
+    );
+
+    if (deleteResult.affectedRows === 0) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado para eliminar" });
+    }
+
+    console.log("✅ Usuario eliminado exitosamente");
+    res.json({ 
+      mensaje: "Usuario eliminado exitosamente",
+      usuario_eliminado: userExists[0].nombre_usuario 
+    });
+
+  } catch (error) {
+    console.error("❌ Error al eliminar usuario:", error);
+    res.status(500).json({ 
+      mensaje: "Error interno del servidor al eliminar usuario",
+      error: error.message 
+    });
+  }
+});
+
+
 // ===== Ruta: Perfil del usuario logueado =====
 app.get("/api/perfil", verifyToken, (req, res) => {
   const userId = req.user.id_usuario; // viene del token
@@ -401,7 +696,88 @@ app.post("/api/orden", verificarToken, (req, res) => {
         return res.status(500).json({ mensaje: "Error al registrar detalles del pedido", error: err2.message });
       }
       
-      res.json({ ok: true, mensaje: "Pedido registrado con éxito", id_pedido: pedidoId });
+      // 📦 DESCONTAR CANTIDADES DEL INVENTARIO
+      console.log("✅ Detalles insertados, procediendo a descontar inventario...");
+      
+      // Crear promesas para actualizar cada artículo
+      const inventarioPromises = items.map(item => {
+        return new Promise((resolve, reject) => {
+          // Primero verificar stock actual
+          db.query(
+            "SELECT cantidad_artículo FROM artículo WHERE id_artículo = ?",
+            [item.id],
+            (err, stockResult) => {
+              if (err) {
+                console.error(`❌ Error al verificar stock del artículo ${item.id}:`, err);
+                return reject(err);
+              }
+              
+              if (stockResult.length === 0) {
+                console.error(`❌ Artículo ${item.id} no encontrado`);
+                return reject(new Error(`Artículo ${item.id} no encontrado`));
+              }
+              
+              const stockActual = stockResult[0].cantidad_artículo;
+              const nuevaCantidad = stockActual - item.cantidad;
+              
+              // Verificar que no quede en números negativos
+              if (nuevaCantidad < 0) {
+                console.warn(`⚠️ Stock insuficiente para artículo ${item.id}. Stock: ${stockActual}, Solicitado: ${item.cantidad}`);
+                // Establecer en 0 si queda negativo
+                const cantidadFinal = 0;
+                
+                db.query(
+                  "UPDATE artículo SET cantidad_artículo = ? WHERE id_artículo = ?",
+                  [cantidadFinal, item.id],
+                  (updateErr) => {
+                    if (updateErr) {
+                      console.error(`❌ Error al actualizar inventario del artículo ${item.id}:`, updateErr);
+                      return reject(updateErr);
+                    }
+                    console.log(`📦 Inventario actualizado: Artículo ${item.id} - Stock anterior: ${stockActual}, Vendido: ${item.cantidad}, Stock final: ${cantidadFinal} (AGOTADO)`);
+                    resolve();
+                  }
+                );
+              } else {
+                // Stock suficiente, descontar normalmente
+                db.query(
+                  "UPDATE artículo SET cantidad_artículo = ? WHERE id_artículo = ?",
+                  [nuevaCantidad, item.id],
+                  (updateErr) => {
+                    if (updateErr) {
+                      console.error(`❌ Error al actualizar inventario del artículo ${item.id}:`, updateErr);
+                      return reject(updateErr);
+                    }
+                    console.log(`📦 Inventario actualizado: Artículo ${item.id} - Stock anterior: ${stockActual}, Vendido: ${item.cantidad}, Stock final: ${nuevaCantidad}`);
+                    resolve();
+                  }
+                );
+              }
+            }
+          );
+        });
+      });
+      
+      // Ejecutar todas las actualizaciones de inventario
+      Promise.all(inventarioPromises)
+        .then(() => {
+          console.log("✅ Inventario actualizado exitosamente para todos los artículos");
+          res.json({ 
+            ok: true, 
+            mensaje: "Pedido registrado con éxito e inventario actualizado", 
+            id_pedido: pedidoId 
+          });
+        })
+        .catch((inventarioError) => {
+          console.error("❌ Error al actualizar inventario:", inventarioError);
+          // El pedido ya se registró, pero hubo error en inventario
+          res.json({ 
+            ok: true, 
+            mensaje: "Pedido registrado con éxito, pero hubo un problema actualizando el inventario", 
+            id_pedido: pedidoId,
+            advertencia: "Revisar stock manualmente"
+          });
+        });
     });
   });
 });
@@ -479,6 +855,7 @@ app.get("/api/cotizacion", verificarToken, (req, res) => {
   );
 });
 
+
 // Ruta para eliminar una cotización por id.
 app.delete("/api/cotizacion/:id_cotización", verificarToken, (req, res) => {
   const id_cotización = req.params.id_cotización;
@@ -492,6 +869,47 @@ app.delete("/api/cotizacion/:id_cotización", verificarToken, (req, res) => {
   );
 });
 
+//Endpoint admin cotizaciones - ver TODA la tabla cotización en bruto
+app.get("/api/cotizaciones-todas", verificarToken, (req, res) => {
+  console.log("🔍 Admin solicitando todas las cotizaciones en bruto");
+
+  // Consulta simple para obtener TODA la tabla cotización sin filtros
+  const query = `
+    SELECT 
+      id_cotización,
+      Usuario_id_usuario,
+      nombre_usuario,
+      placa_vehículo,
+      modelo_vehículo,
+      año_vehículo,
+      tipo_combustible,
+      estado_vehículo,
+      kilometraje_vehículo,
+      ubicación_vehículo,
+      fecha_cotización,
+      estado_cotización,
+      comentarios_cotización
+    FROM cotización
+    ORDER BY fecha_cotización DESC
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("❌ Error al obtener todas las cotizaciones:", err);
+      return res.status(500).json({ 
+        mensaje: "Error al obtener cotizaciones", 
+        error: err.message 
+      });
+    }
+
+    console.log(`✅ Admin: ${results.length} cotizaciones encontradas en total`);
+    res.json(results);
+  });
+});
+
+
+
+
 // === APIs para gestión de artículos (Stock) ===
 
 // Registrar un nuevo artículo
@@ -501,7 +919,7 @@ app.post("/api/articulo", (req, res) => {
     cantidad_artículo,
     precio_artículo,
     costo_artículo,
-    Proveedor_id_proveedor,
+    Proveedor_id_proveedor
   } = req.body;
   if (
     !nombre_artículo ||
@@ -521,7 +939,7 @@ app.post("/api/articulo", (req, res) => {
       cantidad_artículo,
       precio_artículo,
       costo_artículo,
-      Proveedor_id_proveedor,
+      Proveedor_id_proveedor
     ],
     (err, result) => {
       if (err) {
@@ -535,32 +953,37 @@ app.post("/api/articulo", (req, res) => {
 
 // Eliminar un artículo por ID
 app.delete("/api/articulo/:id_articulo", (req, res) => {
-  const { id_artículo } = req.params;
+  const { id_articulo } = req.params;
+  console.log("🗑️ Eliminando artículo ID:", id_articulo);
+  
   db.query(
-    "DELETE FROM Artículo WHERE id_artículo = ?",
-    [id_artículo],
+    "DELETE FROM artículo WHERE id_artículo = ?", // Correcto: tabla con tilde
+    [id_articulo],
     (err, result) => {
       if (err) {
         console.error("Error al eliminar artículo:", err.message);
-        return res.status(500).json({ mensaje: "Error al eliminar artículo" });
+        return res.status(500).json({ mensaje: "Error al eliminar artículo", error: err.message });
       }
       if (result.affectedRows === 0) {
         return res.status(404).json({ mensaje: "Artículo no encontrado" });
       }
-      res.json({ mensaje: "Artículo eliminado exitosamente" });
+      console.log(`✅ Artículo ${id_articulo} eliminado exitosamente`);
+      res.json({ mensaje: "Artículo eliminado exitosamente", id: id_articulo });
     }
   );
 });
 
 app.put("/api/articulo/:id_articulo", (req, res) => {
-  const { id_artículo } = req.params;
+  const { id_articulo } = req.params; // Corregido: usar id_articulo sin tilde
   const {
     nombre_artículo,
     cantidad_artículo,
     precio_artículo,
-    costo_artículo,
-    Proveedor_id_proveedor,
+    costo_artículo
   } = req.body;
+  
+  console.log("✏️ Actualizando artículo ID:", id_articulo, "con datos:", req.body);
+  
   // Solo actualiza los campos que se envían
   const fields = [];
   const values = [];
@@ -580,28 +1003,26 @@ app.put("/api/articulo/:id_articulo", (req, res) => {
     fields.push("costo_artículo = ?");
     values.push(costo_artículo);
   }
-  if (Proveedor_id_proveedor !== undefined) {
-    fields.push("Proveedor_id_proveedor = ?");
-    values.push(Proveedor_id_proveedor);
-  }
+
   if (fields.length === 0) {
     return res
       .status(400)
       .json({ mensaje: "No se enviaron campos para actualizar" });
   }
-  values.push(id_artículo);
-  const query = `UPDATE Artículo SET ${fields.join(
+  values.push(id_articulo);
+  const query = `UPDATE artículo SET ${fields.join( // Correcto: tabla con tilde
     ", "
   )} WHERE id_artículo = ?`;
   db.query(query, values, (err, result) => {
     if (err) {
       console.error("Error al modificar artículo:", err.message);
-      return res.status(500).json({ mensaje: "Error al modificar artículo" });
+      return res.status(500).json({ mensaje: "Error al modificar artículo", error: err.message });
     }
     if (result.affectedRows === 0) {
       return res.status(404).json({ mensaje: "Artículo no encontrado" });
     }
-    res.json({ mensaje: "Artículo modificado exitosamente" });
+    console.log(`✅ Artículo ${id_articulo} actualizado exitosamente`);
+    res.json({ mensaje: "Artículo modificado exitosamente", id: id_articulo });
   });
 });
 
@@ -612,7 +1033,21 @@ app.get("/", (req, res) => {
 
 // Obtener todos los artículos (stock)
 app.get("/api/articulo", (req, res) => {
-  db.query("SELECT * FROM artículo", (err, results) => {
+  // JOIN con la tabla proveedor para obtener el nombre del proveedor
+  const query = `
+    SELECT 
+      a.id_artículo,
+      a.nombre_artículo,
+      a.cantidad_artículo,
+      a.precio_artículo,
+      a.costo_artículo,
+      a.Proveedor_id_proveedor,
+      p.nombre_proveedor
+    FROM artículo a
+    LEFT JOIN proveedor p ON a.Proveedor_id_proveedor = p.id_proveedor
+  `;
+  
+  db.query(query, (err, results) => {
     if (err) {
       console.error("❌ Error al obtener artículos:", err.message);
       return res.status(500).json({ mensaje: "Error al obtener artículos" });
@@ -794,6 +1229,7 @@ app.post('/api/carrito', verificarToken, (req, res) => {
   
   console.log('🛒 Usuario:', id_usuario, 'Artículo:', id_articulo, 'Cantidad:', cantidad);
 
+
   // Función para manejar la inserción en carritodetalle
   const insertarDetalle = (id_carrito) => {
     console.log('Insertando detalle, carrito:', id_carrito, 'artículo:', id_articulo, 'usuario:', id_usuario);
@@ -870,6 +1306,64 @@ app.post('/api/carrito', verificarToken, (req, res) => {
       }
     }
   );
+});
+// 🟢 Fusionar carrito temporal del cliente con el carrito del usuario logueado
+app.post('/api/carrito/merge', verificarToken, async (req, res) => {
+  const id_usuario = req.usuario.id_usuario;
+  const { productos } = req.body; // productos = [id_articulo1, id_articulo2, ...]
+
+  if (!productos || !Array.isArray(productos) || productos.length === 0) {
+    return res.status(400).json({ mensaje: "No se enviaron productos válidos para fusionar" });
+  }
+
+  try {
+    // 1. Buscar o crear carrito del usuario
+    const [carrito] = await db.promise().query(
+      'SELECT id_carrito FROM carrito WHERE Usuario_id_usuario = ? ORDER BY fecha_carrito DESC LIMIT 1',
+      [id_usuario]
+    );
+
+    let id_carrito;
+    if (carrito.length) {
+      id_carrito = carrito[0].id_carrito;
+    } else {
+      const [nuevo] = await db.promise().query(
+        'INSERT INTO carrito (fecha_carrito, Usuario_id_usuario) VALUES (NOW(), ?)',
+        [id_usuario]
+      );
+      id_carrito = nuevo.insertId;
+    }
+
+    // 2. Insertar productos (evitando duplicados)
+    for (const id_articulo of productos) {
+      // Verificar si ya existe el producto en el carrito
+      const [existe] = await db.promise().query(
+        'SELECT cantidad_carrito FROM carritodetalle WHERE Carrito_id_carrito = ? AND Artículo_id_artículo = ? AND Usuario_id_usuario = ?',
+        [id_carrito, id_articulo, id_usuario]
+      );
+
+      if (existe.length) {
+        // Si ya existe, incrementa cantidad en 1
+        await db.promise().query(
+          'UPDATE carritodetalle SET cantidad_carrito = cantidad_carrito + 1 WHERE Carrito_id_carrito = ? AND Artículo_id_artículo = ? AND Usuario_id_usuario = ?',
+          [id_carrito, id_articulo, id_usuario]
+        );
+      } else {
+        // Si no existe, lo inserta con cantidad = 1
+        await db.promise().query(
+          'INSERT INTO carritodetalle (Carrito_id_carrito, Usuario_id_usuario, Artículo_id_artículo, cantidad_carrito) VALUES (?, ?, ?, 1)',
+          [id_carrito, id_usuario, id_articulo]
+        );
+      }
+    }
+
+    console.log(`✅ Carrito fusionado correctamente para usuario ${id_usuario}`);
+    res.json({ mensaje: "Carrito fusionado correctamente" });
+
+  } catch (error) {
+    console.error("❌ Error al fusionar carrito temporal:", error.message);
+    res.status(500).json({ mensaje: "Error al fusionar carrito temporal", error: error.message });
+  }
 });
 
 // Obtener el carrito actual del usuario con sus productos
@@ -950,8 +1444,6 @@ app.put('/api/carrito/:id_articulo', verificarToken, (req, res) => {
         if (result.affectedRows === 0) {
           return res.status(404).json({ mensaje: 'Producto no encontrado en el carrito' });
         }
-        
-        res.json({ mensaje: 'Cantidad actualizada correctamente' });
       }
     );
   });
@@ -1070,69 +1562,251 @@ app.get("/api/carritodetalle/usuario", verificarToken, (req, res) => {
   );
 });
 
-// ===== RUTAS PARA PEDIDOS =====
+// Middleware verificarToken debe asignar req.usuario = { id_usuario, rol_usuario }
 
-// Obtener todos los pedidos del usuario autenticado
-apiRouter.get("/pedidos_usuario", verificarToken, (req, res) => {
+// ✅ Obtener todos los pedidos del usuario autenticado
+app.get("/api/pedidos_usuario", verificarToken, (req, res) => {
   const id_usuario = req.usuario.id_usuario;
   console.log("Buscando pedidos para el usuario:", id_usuario);
-  
+
   const sql = `
     SELECT 
-      p.id_pedido,
-      p.fecha_pedido,
-      p.estado_pedido,
-      p.precio_total
-    FROM pedido p
-    WHERE p.Usuario_id_usuario = ?
-    ORDER BY p.fecha_pedido DESC
+      id_pedido,
+      fecha_pedido,
+      estado_pedido,
+      precio_total
+    FROM pedido
+    WHERE Usuario_id_usuario = ?
+    ORDER BY fecha_pedido DESC
   `;
 
-  db.query(sql, [id_usuario], (error, results) => {
-    if (error) {
-      console.error("❌ Error al obtener pedidos:", error);
-      return res.status(500).json({ mensaje: "Error al obtener los pedidos", error: error.message });
+  db.query(sql, [id_usuario], (err, results) => {
+    if (err) {
+      console.error("Error en consulta SQL:", err);
+      return res.status(500).json({ 
+        mensaje: "Error al obtener los pedidos", 
+        error: err.message 
+      });
     }
-    console.log(`Se encontraron ${results.length} pedidos para el usuario ${id_usuario}`);
+
+    console.log(`Encontrados ${results.length} pedidos para usuario ${id_usuario}`);
     res.json(results);
   });
 });
-
-// Obtener los detalles de un pedido específico
-apiRouter.get("/pedidos/:id/detalles", verificarToken, (req, res) => {
+// ✅ Obtener detalles de un pedido
+app.get("/api/pedidos/:id/detalles", verificarToken, (req, res) => {
   const id_pedido = req.params.id;
-  const id_usuario = req.usuario.id_usuario;
+  const userId = req.usuario.id_usuario;
+  const isAdmin = req.usuario.rol_usuario?.toLowerCase() === "admin";
 
-  console.log(`Buscando detalles del pedido ${id_pedido} para usuario ${id_usuario}`);
-
-  // Primero verificamos que el pedido pertenezca al usuario
   const sql = `
     SELECT 
+      pd.Pedido_id_pedido,
       pd.Artículo_id_artículo,
       pd.cantidad_pedido,
       pd.precio_unitario,
+      p.Usuario_id_usuario,
       a.nombre_artículo
     FROM pedidodetalle pd
     JOIN pedido p ON pd.Pedido_id_pedido = p.id_pedido
     LEFT JOIN artículo a ON pd.Artículo_id_artículo = a.id_artículo
-    WHERE p.id_pedido = ? AND p.Usuario_id_usuario = ?
+    WHERE p.id_pedido = ?
   `;
 
-  db.query(sql, [id_pedido, id_usuario], (error, results) => {
-    if (error) {
-      console.error("❌ Error al obtener detalles del pedido:", error);
+  db.query(sql, [id_pedido], (err, results) => {
+    if (err) {
+      console.error("❌ Error al obtener detalles del pedido:", err);
+      return res.status(500).json({ mensaje: "Error al obtener los detalles del pedido" });
+    }
+
+    if (!results || results.length === 0) {
+      return res.status(404).json({ mensaje: "Pedido no encontrado" });
+    }
+
+    // Restringir solo a usuarios normales
+    if (!isAdmin && results[0].Usuario_id_usuario !== userId) {
+      return res.status(403).json({ mensaje: "No autorizado para ver este pedido" });
+    }
+
+    res.json(results);
+  });
+});
+
+// ✅ Obtener todos los pedidos
+app.get("/api/pedido", verificarToken, (req, res) => {
+  const userId = req.usuario.id_usuario;
+  const isAdmin = req.usuario.rol_usuario?.toLowerCase() === "admin";
+
+  let query = `
+    SELECT 
+      p.id_pedido, 
+      p.Usuario_id_usuario, 
+      p.fecha_pedido AS fecha, 
+      p.estado_pedido AS estado, 
+      p.precio_total AS total, 
+      u.nombre_usuario
+    FROM pedido p
+    JOIN usuario u ON u.id_usuario = p.Usuario_id_usuario
+  `;
+  const params = [];
+
+  // Solo filtrar por usuario si NO es admin
+  if (!isAdmin) {
+    query += " WHERE p.Usuario_id_usuario = ?";
+    params.push(userId);
+  }
+
+  query += " ORDER BY p.fecha_pedido DESC";
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error("❌ Error al obtener pedidos:", err);
+      return res.status(500).json({ mensaje: "Error al obtener pedidos" });
+    }
+
+    // Siempre devolver un array (vacío si no hay pedidos)
+    res.json(results || []);
+  });
+});
+
+// ✅ Nuevo endpoint para admin - obtener TODOS los pedidos del sistema (formato igual a PerfilUsuario)
+app.get("/api/admin/pedidos", verificarToken, (req, res) => {
+  console.log("🔍 Admin solicitando todos los pedidos del sistema");
+
+  const sql = `
+    SELECT 
+      id_pedido,
+      fecha_pedido,
+      estado_pedido,
+      precio_total
+    FROM pedido
+    ORDER BY fecha_pedido DESC
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("❌ Error en consulta SQL (admin pedidos):", err);
       return res.status(500).json({ 
-        mensaje: "Error al obtener los detalles del pedido",
-        error: error.message 
+        mensaje: "Error al obtener todos los pedidos", 
+        error: err.message 
+      });
+    }
+
+    console.log(`✅ Admin: ${results.length} pedidos encontrados en total`);
+    res.json(results);
+  });
+});
+
+// ✅ Nuevo endpoint para admin - obtener detalles de cualquier pedido sin restricciones
+app.get("/api/admin/pedidos/:id/detalles", verificarToken, (req, res) => {
+  const pedidoId = req.params.id;
+  console.log("🔍 Admin solicitando detalles del pedido:", pedidoId);
+
+  const query = `
+    SELECT 
+      pd.Pedido_id_pedido,
+      pd.Artículo_id_artículo,
+      pd.cantidad_pedido,
+      pd.precio_unitario,
+      pd.Usuario_id_usuario,
+      a.nombre_artículo
+    FROM pedidodetalle pd
+    JOIN artículo a ON pd.Artículo_id_artículo = a.id_artículo
+    WHERE pd.Pedido_id_pedido = ?
+    ORDER BY pd.Artículo_id_artículo
+  `;
+
+  db.query(query, [pedidoId], (err, results) => {
+    if (err) {
+      console.error("❌ Error al consultar detalles del pedido (admin):", err);
+      return res.status(500).json({ 
+        mensaje: "Error al consultar detalles", 
+        error: err.message 
       });
     }
 
     if (results.length === 0) {
-      console.log(`No se encontraron detalles para el pedido ${id_pedido}`);
-      return res.status(404).json({ mensaje: "Pedido no encontrado o no tienes permiso para verlo" });
+      console.log(`⚠️ No se encontraron detalles para el pedido ${pedidoId}`);
+      return res.status(404).json({ 
+        mensaje: "No se encontraron detalles para este pedido" 
+      });
     }
 
-    console.log(`Se encontraron ${results.length} detalles para el pedido ${id_pedido}`);
+    console.log(`✅ Admin: ${results.length} detalles encontrados para pedido ${pedidoId}`);
     res.json(results);
+  });
+});
+
+// ✅ Nuevo endpoint para admin - actualizar estado de pedido
+app.put("/api/admin/pedidos/:id/estado", verificarToken, (req, res) => {
+  const pedidoId = req.params.id;
+  const { estado_pedido } = req.body;
+  
+  console.log(`✏️ Admin cambiando estado del pedido ${pedidoId} a: ${estado_pedido}`);
+
+  if (!estado_pedido) {
+    return res.status(400).json({ mensaje: "Debe proporcionar el nuevo estado" });
+  }
+
+  const query = "UPDATE pedido SET estado_pedido = ? WHERE id_pedido = ?";
+
+  db.query(query, [estado_pedido, pedidoId], (err, result) => {
+    if (err) {
+      console.error("❌ Error al actualizar estado del pedido:", err);
+      return res.status(500).json({ 
+        mensaje: "Error al actualizar estado", 
+        error: err.message 
+      });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ 
+        mensaje: "Pedido no encontrado" 
+      });
+    }
+
+    console.log(`✅ Estado del pedido ${pedidoId} actualizado a ${estado_pedido}`);
+    res.json({ 
+      mensaje: "Estado actualizado exitosamente",
+      id: pedidoId,
+      nuevo_estado: estado_pedido 
+    });
+  });
+});
+
+// ✅ Nuevo endpoint para admin - actualizar estado de cotización
+app.put("/api/admin/cotizaciones/:id/estado", verificarToken, (req, res) => {
+  const cotizacionId = req.params.id;
+  const { estado_cotización } = req.body;
+  
+  console.log(`✏️ Admin cambiando estado de la cotización ${cotizacionId} a: ${estado_cotización}`);
+
+  if (!estado_cotización) {
+    return res.status(400).json({ mensaje: "Debe proporcionar el nuevo estado" });
+  }
+
+  const query = "UPDATE cotización SET estado_cotización = ? WHERE id_cotización = ?";
+
+  db.query(query, [estado_cotización, cotizacionId], (err, result) => {
+    if (err) {
+      console.error("❌ Error al actualizar estado de la cotización:", err);
+      return res.status(500).json({ 
+        mensaje: "Error al actualizar estado", 
+        error: err.message 
+      });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ 
+        mensaje: "Cotización no encontrada" 
+      });
+    }
+
+    console.log(`✅ Estado de la cotización ${cotizacionId} actualizado a ${estado_cotización}`);
+    res.json({ 
+      mensaje: "Estado actualizado exitosamente",
+      id: cotizacionId,
+      nuevo_estado: estado_cotización 
+    });
   });
 });

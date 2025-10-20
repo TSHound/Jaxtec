@@ -1,137 +1,160 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Admin - Usuarios - JAXTEC</title>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin - Usuarios - JAXTEC</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../CSS/Usuarios.css" />
+<style>
+/* Tu CSS existente aquí (el que me pasaste) */
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #000;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  background: #121212;
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 3px 8px rgb(255 193 7 / 0.3);
+  overflow-x: auto;
+}
+/* ... resto de tu CSS ... */
+.sticky-column {
+  position: sticky;
+  right: 0;
+  background: #121212;
+  z-index: 5;
+  text-align: center;
+}
+th.sticky-header {
+  position: sticky;
+  top: 0;
+  background: #222;
+  z-index: 10;
+}
+.table-wrapper {
+  overflow-x: auto;
+  max-height: calc(100vh - 200px);
+}
+</style>
+</head>
+<body>
 
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- External CSS -->
-    <link rel="stylesheet" href="../CSS/Usuarios.css">
-  </head>
-  <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <img
-            src="../Imagenes/TrueLogo.png"
-            alt="JAXTEC Logo"
-            style="height: 44px; margin-right: 6px"
-          />
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 1rem">
-            <li class="nav-item">
-              <a class="nav-link" href="Inicio.html">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="Stock.html">Stock</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="Proveedores.html">Proveedores</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="Usuarios.html">Usuarios</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="Pedidos.html">Pedidos</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="Cotizaciones.html">Cotizaciones</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="LogIn.html">Log In</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <div class="container" role="main">
-      <h1>Gestión de Usuarios</h1>
-
-      <button
-        class="btn-add"
-        type="button"
-        onclick="alert('Aquí abrirías el formulario para agregar usuario')"
-      >
-        + Agregar Usuario
-      </button>
-
-      <table aria-label="Lista de usuarios">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Correo</th>
-            <th>Rol</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="usuariosTableBody">
-          <tr>
-            <td>1</td>
-            <td>Carlos Méndez</td>
-            <td>carlos@ejemplo.com</td>
-            <td>Administrador</td>
-            <td>Activo</td>
-            <td>
-              <button class="btn-edit" onclick="alert('Editar usuario 1')">
-                Editar
-              </button>
-              <button class="btn-delete" onclick="alert('Eliminar usuario 1')">
-                Eliminar
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Lucía Ramírez</td>
-            <td>lucia@ejemplo.com</td>
-            <td>Usuario</td>
-            <td>Inactivo</td>
-            <td>
-              <button class="btn-edit" onclick="alert('Editar usuario 2')">
-                Editar
-              </button>
-              <button class="btn-delete" onclick="alert('Eliminar usuario 2')">
-                Eliminar
-              </button>
-            </td>
-          </tr>
-          <!-- Más filas según usuarios -->
-        </tbody>
-      </table>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="../Imagenes/TrueLogo.png" alt="JAXTEC Logo" style="height: 44px; margin-right: 6px" />
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: 1rem">
+        <li class="nav-item"><a class="nav-link" href="Stock.html">Stock</a></li>
+        <li class="nav-item"><a class="nav-link" href="Proveedores.html">Proveedores</a></li>
+        <li class="nav-item"><a class="nav-link active" href="Usuarios.html">Usuarios</a></li>
+        <li class="nav-item"><a class="nav-link" href="Pedidos.html">Pedidos</a></li>
+        <li class="nav-item"><a class="nav-link" href="Cotizaciones.html">Cotizaciones</a></li>
+        <li class="nav-item"><a class="nav-link" href="LogIn.html">Log In</a></li>
+      </ul>
     </div>
+  </div>
+</nav>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Contenedor principal -->
+<div class="container mt-4" role="main">
+  <h1>Gestión de Usuarios</h1>
 
-    <!-- External JavaScript -->
-    <script src="../JS/Usuarios.js"></script>
-  </body>
+  <div class="table-wrapper">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th class="">ID Usuario</th>
+          <th class="">Nombre</th>
+          <th class="">Contraseña</th>
+          <th class="">Teléfono</th>
+          <th class="">Dirección</th>
+          <th class="">Correo</th>
+          <th class="">Rol</th>
+          <th class="col-fija">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="usuariosTableBody">
+        <tr>
+          <td>1</td>
+          <td>Admin</td>
+          <td class="password-cell" data-password="$2a$10$ZkP9qvK72M1PABJ7KksONu7dk1BYjkC5W0Z5W2lB1E9tVqO1nYpE2">$2a$10$Zk...</td>
+          <td>5551234567</td>
+          <td>Av. Principal #123</td>
+          <td>admin@jaxtec.com</td>
+          <td>Administrador</td>
+          <td class="col-fija">
+            <button class="btn-modificar btn btn-warning btn-sm me-1" data-id="1">Modificar</button>
+            <button class="btn-eliminar btn btn-danger btn-sm" data-id="1">Eliminar</button>
+          </td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Juan</td>
+          <td class="password-cell" data-password="$2a$10$abcd1234...">$2a$10$abcd...</td>
+          <td>5559876543</td>
+          <td>Calle Secundaria #456</td>
+          <td>juan@jaxtec.com</td>
+          <td>Usuario</td>
+          <td class="sticky-column">
+            <button class="btn-modificar btn btn-warning btn-sm me-1" data-id="2">Modificar</button>
+            <button class="btn-eliminar btn btn-danger btn-sm" data-id="2">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../JS/Usuarios.js"></script>
+
+<!-- Modales -->
+<div id="passwordModal" class="modal-overlay">
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+    <h3>Contraseña completa</h3>
+    <p id="passwordModalText"></p>
+  </div>
+</div>
+
+<div id="modificarModal" class="modal-overlay">
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+    <h3>Modificar Usuario</h3>
+    <p>ID del usuario: <strong id="modificarId"></strong></p>
+    <form id="modificarForm">
+      <input type="text" placeholder="Nuevo nombre" class="modal-input" />
+      <input type="email" placeholder="Nuevo correo" class="modal-input" />
+      <input type="text" placeholder="Nuevo teléfono" class="modal-input" />
+      <button type="submit" class="modal-btn">Guardar cambios</button>
+    </form>
+  </div>
+</div>
+
+<div id="eliminarModal" class="modal-overlay">
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+    <h3>Eliminar Usuario</h3>
+    <p>¿Seguro que deseas eliminar al usuario con ID <strong id="eliminarId"></strong>?</p>
+    <div class="modal-buttons">
+      <button id="confirmarEliminar" class="modal-btn eliminar">Sí, eliminar</button>
+      <button class="modal-btn cancelar modal-close">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+</body>
 </html>

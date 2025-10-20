@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cambiar contraseña - JAXTEC</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fffbe6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      border: 2px solid #fdd835;
+      border-radius: 12px;
+      padding: 35px 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #fdd835;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    button {
+      background: #fdd835;
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      transition: background 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background: #ffeb3b;
+    }
+
+    p.message {
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Este texto será reemplazado dinámicamente por contrasena.js -->
+    <h2 id="tituloCambio">Cambiar contraseña</h2>
+
+    <form id="formContrasena">
+      <input type="password" id="nuevaContrasena" placeholder="Nueva contraseña" required />
+      <button type="submit">Cambiar contraseña</button>
+    </form>
+
+    <p class="message">© 2025 JAXTEC</p>
+  </div>
+
+  <!-- Ruta correcta según tu estructura de carpetas -->
+  <script src="/js/contrasena.js"></script>
+</body>
+</html>

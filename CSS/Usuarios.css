@@ -6,17 +6,6 @@ body {
   padding: 0;
 }
 
-/* Estilos para el mensaje de bienvenida del usuario */
-.bienvenido-usuario {
-  margin-right: 15px;
-  padding: 8px;
-}
-
-.bienvenido-texto {
-  font-weight: bold;
-  color: #ffc107;
-}
-
 /* Navbar */
 .navbar {
   background-color: #000;
@@ -33,13 +22,8 @@ body {
 .navbar .nav-link.active {
   color: #ffc107;
 }
-.navbar-toggler {
-  border-color: #ffc107;
-}
-.navbar-toggler-icon {
-  filter: invert(100%);
-}
 
+/* Contenedor principal */
 .container {
   max-width: 1100px;
   margin: 40px auto;
@@ -47,131 +31,248 @@ body {
   border-radius: 12px;
   padding: 30px 40px;
   box-shadow: 0 3px 8px rgb(255 193 7 / 0.3);
+  overflow-x: hidden; /* evita scroll horizontal */
 }
 
+/* Encabezado */
 h1 {
   font-weight: 700;
   font-size: 2.4rem;
   margin-bottom: 25px;
   color: #ffc107;
+  text-align: center;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  color: #eee;
-}
-thead {
-  background-color: #222;
-}
-thead th {
-  padding: 12px;
-  border-bottom: 2px solid #ffc107;
-  text-align: left;
-}
-tbody tr:hover {
-  background-color: #333;
-}
-tbody td {
-  padding: 12px;
-  border-bottom: 1px solid #444;
-}
-
-/* Botones */
-.btn-add {
-  background-color: #28a745;
-  color: #fff;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 8px 16px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-bottom: 20px;
-}
-.btn-add:hover {
-  background-color: #218838;
-}
-.btn-edit {
+/* Botón agregar */
+.btn.btn-primary {
   background-color: #ffc107;
   color: #000;
   font-weight: 600;
-  border-radius: 6px;
-  padding: 6px 12px;
   border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-right: 8px;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
 }
-.btn-edit:hover {
+.btn.btn-primary:hover {
   background-color: #d99a00;
 }
-.btn-delete {
-  background-color: #d9534f;
-  color: #fff;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 6px 12px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.btn-delete:hover {
-  background-color: #c9302c;
+
+/* Tabla */
+.table-wrapper {
+  overflow-x: auto;
+  max-height: calc(100vh - 200px);
 }
 
-/* Responsive tabla */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #eee;
+  background-color: #181818;
+}
+
+.table thead {
+  background-color: #222;
+}
+.table thead th {
+  padding: 14px;
+  border-bottom: 2px solid #ffc107;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table tbody tr:hover {
+  background-color: #2a2a2a;
+}
+
+/* Filas alternas */
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #1a1a1a;
+}
+
+/* Columna de contraseña */
+.password-cell {
+  max-width: 180px;
+  cursor: pointer;
+  color: #ffc107;
+  font-weight: 600;
+  position: relative;
+}
+
+.password-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 120%;
+  left: 0;
+  background-color: #222;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  max-width: 400px;
+  word-break: break-all;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.6);
+  z-index: 10;
+}
+
+.password-cell:hover .password-tooltip,
+.password-tooltip.visible {
+  display: block;
+}
+
+/* Botones de acción */
+.btn-modificar,
+.btn-eliminar {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-modificar {
+  background-color: #007bff;
+  color: #fff;
+  margin-right: 5px;
+}
+.btn-modificar:hover {
+  background-color: #0056b3;
+}
+
+.btn-eliminar {
+  background-color: #dc3545;
+  color: #fff;
+  margin-left: 5px;
+}
+.btn-eliminar:hover {
+  background-color: #b02a37;
+}
+
+/* Sticky solo para última columna */
+.col-fija {
+  position: sticky;
+  right: 0;
+  background-color: #121212;
+  z-index: 5;
+  text-align: center;
+}
+
+/* Sticky header */
+th.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: #222;
+  z-index: 10;
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal-content {
+  background: #1e1e1e;
+  color: #fff;
+  border-radius: 10px;
+  padding: 25px 35px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 15px rgba(255,193,7,0.3);
+  text-align: center;
+  position: relative;
+  border: 2px solid #ffc107;
+}
+
+.modal-content h3 {
+  color: #ffc107;
+  margin-bottom: 15px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #ffc107;
+  transition: transform 0.2s;
+}
+.modal-close:hover {
+  transform: scale(1.2);
+  color: #ffdb4d;
+}
+
+/* Inputs y botones del modal */
+.modal-input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background-color: #111;
+  color: #fff;
+}
+
+.modal-btn {
+  background-color: #ffc107;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s ease;
+}
+.modal-btn:hover {
+  background-color: #d99a00;
+}
+
+.modal-btn.eliminar {
+  background-color: #dc3545;
+  color: #fff;
+}
+.modal-btn.eliminar:hover {
+  background-color: #b02a37;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Responsivo */
 @media (max-width: 768px) {
-  table,
-  thead,
-  tbody,
-  th,
-  td,
-  tr {
-    display: block;
+  .container {
+    padding: 15px;
   }
-  thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
+  h1 {
+    font-size: 1.8rem;
   }
-  tbody tr {
-    margin-bottom: 1rem;
-    background-color: #222;
-    border-radius: 8px;
-    padding: 10px;
-  }
-  tbody td {
-    border: none;
-    padding: 10px 10px 10px 40%;
-    position: relative;
-  }
-  tbody td::before {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 35%;
-    padding-right: 10px;
-    white-space: nowrap;
-    font-weight: 600;
-    color: #ffc107;
-  }
-  tbody td:nth-of-type(1)::before {
-    content: "ID";
-  }
-  tbody td:nth-of-type(2)::before {
-    content: "Nombre";
-  }
-  tbody td:nth-of-type(3)::before {
-    content: "Correo";
-  }
-  tbody td:nth-of-type(4)::before {
-    content: "Rol";
-  }
-  tbody td:nth-of-type(5)::before {
-    content: "Estado";
-  }
-  tbody td:nth-of-type(6)::before {
-    content: "Acciones";
+  .table {
+    table-layout: auto;
   }
 }
